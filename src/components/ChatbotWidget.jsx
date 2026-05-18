@@ -1,4 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { API_URL } from '../config/api';
+
+const REPORT_LINK_REGEX = /GET\s+\/api\/reports\/([a-zA-Z0-9_-]+\.(?:csv|txt))/gi;
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +25,26 @@ const ChatbotWidget = () => {
 
   const toggleChat = () => setIsOpen(!isOpen);
 
+  const getJwt = () => {
+    try {
+      const stored = localStorage.getItem('jwt');
+      if (stored) return stored;
+    } catch (_) {}
+    return null;
+  };
+
+  const makeDownloadLink = (text, reportMatches) => {
+    let links = [];
+    for (const match of reportMatches) {
+      if (match && match[1]) {
+        links.push({ filename: match[1], url: `/api/reports/${match[1]}` });
+      }
+    }
+    // deduplicate
+    links = links.filter((v, i, a) => a.findIndex(l => l.filename === v.filename) === i);
+    return links;
+  };
+
   const sendMessage = async (e) => {
     if (e) e.preventDefault();
     if (!input.trim()) return;
@@ -31,19 +54,22 @@ const ChatbotWidget = () => {
     setInput('');
     setIsLoading(true);
 
+    const jwt = getJwt();
+    const headers = { 'Content-Type': 'application/json' };
+    if (jwt) {
+      headers['Authorization'] = `Bearer ${jwt}`;
+    }
+
     try {
-      const response = await fetch('http://localhost:5454/api/chat', {
+      const response = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({ message: userMessage }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        // Manejar error del servidor
         setMessages((prev) => [
           ...prev,
           { 
@@ -55,13 +81,17 @@ const ChatbotWidget = () => {
         return;
       }
 
-      // Respuesta exitosa del chatbot (incluye rechazos de contexto)
+      const botText = data.response || 'No se pudo generar una respuesta válida.';
+      const reportMatches = [...botText.matchAll(REPORT_LINK_REGEX)];
+
       setMessages((prev) => [
         ...prev,
         { 
           role: 'bot', 
-          text: data.response || 'No se pudo generar una respuesta válida.',
-          isError: false 
+          text: botText,
+          isError: false,
+          downloadLinks: reportMatches.length > 0
+            ? makeDownloadLink(botText, reportMatches) : undefined
         }
       ]);
     } catch (error) {
@@ -79,9 +109,31 @@ const ChatbotWidget = () => {
     }
   };
 
+  const handleDownload = async (url, filename) => {
+    try {
+      const jwt = getJwt();
+      const headers = {};
+      if (jwt) headers['Authorization'] = `Bearer ${jwt}`;
+      const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`;
+      const res = await fetch(fullUrl, { headers });
+      if (!res.ok) throw new Error('Download failed');
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('Error al descargar el reporte.');
+    }
+  };
+
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      {/* Botón Flotante */}
       {!isOpen && (
         <button
           onClick={toggleChat}
@@ -95,13 +147,11 @@ const ChatbotWidget = () => {
         </button>
       )}
 
-      {/* Ventana de Chat */}
       {isOpen && (
         <div 
           className="bg-[#1e1e1e] rounded-2xl shadow-2xl w-[350px] sm:w-[400px] overflow-hidden flex flex-col border border-gray-800 transition-all duration-300" 
           style={{ height: '550px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}
         >
-          {/* Header */}
           <div className="bg-orange-500 text-white p-4 flex justify-between items-center shadow-md">
             <div className="flex items-center gap-3">
                <div className="relative">
@@ -126,7 +176,6 @@ const ChatbotWidget = () => {
             </button>
           </div>
 
-          {/* Area de Mensajes */}
           <div className="flex-1 p-4 overflow-y-auto bg-[#121212] flex flex-col gap-4">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}>
@@ -138,6 +187,22 @@ const ChatbotWidget = () => {
                     : 'bg-[#2a2a2a] text-gray-200 border-none rounded-tl-sm'
                 }`}>
                   {msg.text}
+                  {msg.downloadLinks && msg.downloadLinks.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {msg.downloadLinks.map((link, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleDownload(link.url, link.filename)}
+                          className="text-xs bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-full transition-colors flex items-center gap-1"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                          </svg>
+                          {link.filename}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -153,7 +218,6 @@ const ChatbotWidget = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Header */}
           <div className="p-3 bg-[#1e1e1e] border-t border-gray-800">
             <form onSubmit={sendMessage} className="flex gap-2">
               <input
@@ -183,4 +247,3 @@ const ChatbotWidget = () => {
 };
 
 export default ChatbotWidget;
-

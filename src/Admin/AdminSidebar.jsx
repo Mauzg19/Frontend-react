@@ -16,6 +16,7 @@ import EventIcon from "@mui/icons-material/Event";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import CategoryIcon from '@mui/icons-material/Category';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
+import FunctionsIcon from '@mui/icons-material/Functions';
 
 const menu = [
   { title: "Panel", icon: <Dashboard />, path: "/" },
@@ -24,6 +25,7 @@ const menu = [
   { title: "Categoría de comida", icon: <CategoryIcon />, path: "/category" },
   { title: "Ingredientes", icon: <FastfoodIcon />, path: "/ingredients" },
   { title: "Eventos", icon: <EventIcon />, path: "/event" },
+  { title: "Modelo Matemático", icon: <FunctionsIcon />, path: "/modelo-matematico" },
   { title: "Detalles", icon: <AdminPanelSettingsIcon />, path: "/details" },
   { title: "Predicción de categoría", icon: <CategoryIcon />, path: "/prediction", adminOnly: true },
   { title: "Cerrar sesión", icon: <LogoutIcon />, path: "/" },

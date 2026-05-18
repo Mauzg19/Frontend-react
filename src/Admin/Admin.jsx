@@ -17,10 +17,10 @@ import {
   getIngredientsOfRestaurant,
 } from "../State/Admin/Ingredients/Action";
 import { getRestaurantsCategory } from "../State/Customers/Restaurant/restaurant.action";
-import Details from "./Details/Details";
-import AdminNavbar from "./AdminNavbar";
+import Details from "./Details/Details";import ModeloMatematico from "./ModeloMatematico/ModeloMatematico";import AdminNavbar from "./AdminNavbar";
 import { getUsersOrders } from "../State/Customers/Orders/Action";
 import { fetchRestaurantsOrder } from "../State/Admin/Order/restaurants.order.action";
+
 
 const Admin = () => {
   const dispatch = useDispatch();
@@ -72,6 +72,7 @@ const Admin = () => {
             <Route path="/category" element={<Category />} />
             <Route path="/prediction" element={<PrediccionCategoria />} />
             <Route path="/details" element={<Details />} />
+            <Route path="/modelo-matematico" element={<ModeloMatematico />} />
           </Routes>
         </div>
       </div>
