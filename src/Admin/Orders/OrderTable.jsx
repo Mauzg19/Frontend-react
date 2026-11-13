@@ -28,6 +28,7 @@ import {
   fetchRestaurantsOrder,
   updateOrderStatus,
 } from "../../State/Admin/Order/restaurants.order.action";
+import { FOOD_IMAGES, getFoodImage, onImageError } from "../../config/imageFallbacks";
 // import {
 //   confirmOrder,
 //   deleteOrder,
@@ -37,10 +38,12 @@ import {
 // } from "../../state/Admin/Order/Action";
 
 const orderStatus = [
-  { label: "Pending", value: "PENDING" },
-  { label: "Completed", value: "COMPLETED" },
-  { label: "Out For Delivery", value: "OUT_FOR_DELIVERY" },
-  { label: "Delivered", value: "DELIVERED" },
+  { label: "Pendiente", value: "PENDING" },
+  { label: "Preparando", value: "PREPARING" },
+  { label: "Listo", value: "READY" },
+  { label: "En camino", value: "OUT_FOR_DELIVERY" },
+  { label: "Entregado", value: "DELIVERED" },
+  { label: "Completado", value: "COMPLETED" },
 ];
 
 const OrdersTable = ({ isDashboard, name }) => {
@@ -68,6 +71,16 @@ const OrdersTable = ({ isDashboard, name }) => {
     handleUpdateStatusMenuClose(index);
     dispatch(updateOrderStatus({ orderId, orderStatus,jwt }));
   };
+
+  const groupItems = (items = []) =>
+    Object.values(
+      items.reduce((acc, oi) => {
+        const key = oi.food?.id ?? oi.food?.name ?? JSON.stringify(oi);
+        if (!acc[key]) acc[key] = { food: oi.food, qty: 0, ingredients: oi.ingredients };
+        acc[key].qty += oi.quantity || 1;
+        return acc;
+      }, {})
+    );
 
   // console.log("restaurants orders store ", restaurantsOrder)
 
@@ -116,10 +129,12 @@ const OrdersTable = ({ isDashboard, name }) => {
                     <TableCell>{item?.id}</TableCell>
                     <TableCell sx={{}}>
                       <AvatarGroup max={4} sx={{ justifyContent: "start" }}>
-                        {item.items.map((orderItem) => (
+                        {groupItems(item.items).map((g) => (
                           <Avatar
-                            alt={orderItem.food.name}
-                            src={orderItem.food?.images[0]}
+                            key={g.food?.id ?? g.food?.name}
+                            alt={g.food?.name}
+                            src={getFoodImage(g.food)}
+                            imgProps={{ onError: onImageError(FOOD_IMAGES[0]) }}
                           />
                         ))}
                       </AvatarGroup>{" "}
@@ -132,9 +147,9 @@ const OrdersTable = ({ isDashboard, name }) => {
                     <TableCell>{formatCurrency(item?.totalAmount)}</TableCell>
                     
                     <TableCell className="">
-                      {item.items.map((orderItem) => (
-                        <p>
-                          {orderItem.food?.name}
+                      {groupItems(item.items).map((g) => (
+                        <p key={g.food?.id ?? g.food?.name}>
+                          {g.food?.name}{g.qty > 1 ? ` ×${g.qty}` : ""}
                         </p>
                       ))}
                     </TableCell>
@@ -155,7 +170,9 @@ const OrdersTable = ({ isDashboard, name }) => {
                           fontWeight: "bold",
                           textAlign: "center",
                         }}
-                        label={item?.orderStatus}
+                        label={item.orderStatus === "PENDING" && item.paymentStatus === "PAID"
+                          ? "Confirmado"
+                          : orderStatus.find(({ value }) => value === item.orderStatus)?.label ?? item.orderStatus}
                         size="small"
                         color={
                           item.orderStatus === "PENDING"
@@ -195,6 +212,7 @@ const OrdersTable = ({ isDashboard, name }) => {
                           >
                             {orderStatus.map((s) => (
                               <MenuItem
+                                key={s.value}
                                 onClick={() =>
                                   handleUpdateOrder(item.id, s.value, index)
                                 }

@@ -36,9 +36,11 @@ export const createMenuItem = ({menu,jwt}) => {
       });
       console.log("created menu ", data);
       dispatch(createMenuItemSuccess(data));
+      return data;
     } catch (error) {
       console.log("catch error ", error);
       dispatch(createMenuItemFailure(error));
+      return null;
     }
   };
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import formatCurrency from "../../config/formatCurrency";
+import { api } from "../../config/api";
 import { useFormik } from "formik";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -10,19 +11,15 @@ import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import CloseIcon from "@mui/icons-material/Close";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { useParams } from "react-router-dom";
 import {
   Alert,
   Box,
   Chip,
-  CircularProgress,
-  IconButton,
   OutlinedInput,
   Snackbar,
 } from "@mui/material";
-import { uploadToCloudinary } from "../utils/UploadToCloudnary";
+import { useNavigate } from "react-router-dom";
 import { createMenuItem } from "../../State/Customers/Menu/menu.action";
 
 const ITEM_HEIGHT = 48;
@@ -42,46 +39,59 @@ const validationSchema = Yup.object({
   price: Yup.number()
     .typeError("El precio debe ser un número")
     .required("El precio es obligatorio")
-    .min(0, "El precio debe ser mayor o igual a 0"),
-
-  imageUrl: Yup.string()
-    .url("Formato de URL inválido")
-    .required("La URL de la imagen es obligatoria"),
-  vegetarian: Yup.boolean().required("Indique si es vegetariano"),
-  seasonal: Yup.boolean().required("Indique si es de temporada"),
-  quantity: Yup.number()
-    .typeError("La cantidad debe ser un número")
-    .required("La cantidad es obligatoria")
-    .min(0, "La cantidad debe ser mayor o igual a 0"),
+    .integer("Usa un precio en pesos enteros")
+    .moreThan(0, "El precio debe ser mayor que cero"),
 });
 const initialValues = {
   name: "",
   description: "",
   price: "",
   category: "",
-  images: [],
   restaurantId: "",
 
   vegetarian: true,
   seasonal: false,
-  quantity: 0,
   ingredients: [],
 };
 
 const AddMenuForm = () => {
   const dispatch = useDispatch();
-  const { id } = useParams();
   const { restaurant, ingredients, auth ,menu} = useSelector((store) => store);
-  const [uploadImage, setUploadingImage] = useState("");
+  const [photo, setPhoto] = useState(null);
+  const [uploadError, setUploadError] = useState("");
+  const [savedProduct, setSavedProduct] = useState(null);
+  const navigate = useNavigate();
   const jwt = localStorage.getItem("jwt");
 
   const formik = useFormik({
     initialValues,
-    onSubmit: (values) => {
-      values.restaurantId = restaurant.usersRestaurant.id;
-
-      dispatch(createMenuItem({ menu: values, jwt: auth.jwt || jwt }));
-      console.log("values ----- ", values);
+    validationSchema,
+    onSubmit: async (values) => {
+      setUploadError("");
+      const token = auth.jwt || jwt;
+      const food = savedProduct || await dispatch(createMenuItem({
+        menu: {
+          ...values,
+          category: values.category ? { id: values.category.id } : null,
+          restaurantId: restaurant.usersRestaurant.id,
+        },
+        jwt: token,
+      }));
+      if (!food) return;
+      if (photo) {
+        setSavedProduct(food);
+        try {
+          const body = new FormData();
+          body.append("image", photo);
+          await api.post(`/api/admin/food/${food.id}/image`, body, {
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
+          });
+        } catch {
+          setUploadError("El platillo se guardó. Elige otra foto o intenta cargarla de nuevo.");
+          return;
+        }
+      }
+      navigate("/admin/restaurant/menu");
     },
   });
 
@@ -107,20 +117,6 @@ const AddMenuForm = () => {
     setPriceDisplay(num === "" || Number.isNaN(num) ? "" : formatCurrency(num));
   };
 
-  const handleImageChange = async (event) => {
-    const file = event.target.files[0];
-    setUploadingImage(true);
-    const image = await uploadToCloudinary(file);
-    formik.setFieldValue("images", [...formik.values.images, image]);
-    setUploadingImage(false);
-  };
-
-  const handleRemoveImage = (index) => {
-    const updatedImages = [...formik.values.images];
-    updatedImages.splice(index, 1);
-    formik.setFieldValue("images", updatedImages);
-  };
-
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
   useEffect(() => {
@@ -139,6 +135,7 @@ const AddMenuForm = () => {
             Agregar nuevo platillo al menú
           </h1>
           <form onSubmit={formik.handleSubmit} className="space-y-4 ">
+            {uploadError && <Alert severity="error">{uploadError}</Alert>}
             <Grid container spacing={2}>
               <Grid className="flex flex-wrap gap-5" item xs={12}>
                 <input
@@ -146,44 +143,15 @@ const AddMenuForm = () => {
                   accept="image/*"
                   id="fileInput"
                   style={{ display: "none" }}
-                  onChange={handleImageChange}
+                  onChange={(event) => setPhoto(event.target.files[0] ?? null)}
                 />
 
                 <label className="relative" htmlFor="fileInput">
                   <span className="w-24 h-24 cursor-pointer flex items-center justify-center p-3 border rounded-md border-gray-600">
                     <AddPhotoAlternateIcon className="text-white" />
                   </span>
-                  {uploadImage && (
-                    <div className="absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex justify-center items-center">
-                      <CircularProgress />
-                    </div>
-                  )}
                 </label>
-
-                <div className="flex flex-wrap gap-2">
-                  {formik.values.images.map((image, index) => (
-                    <div className="relative">
-                      <img
-                        className="w-24 h-24 object-cover"
-                        key={index}
-                        src={image}
-                        alt={`ProductImage ${index + 1}`}
-                      />
-                      <IconButton
-                        onClick={() => handleRemoveImage(index)}
-                        size="small"
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          outline: "none",
-                        }}
-                      >
-                        <CloseIcon sx={{ fontSize: "1rem" }} />
-                      </IconButton>
-                    </div>
-                  ))}
-                </div>
+                {photo && <p>{photo.name}</p>}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -353,8 +321,8 @@ const AddMenuForm = () => {
               </FormControl>
             </Grid> */}
             </Grid>
-            <Button variant="contained" color="primary" type="submit">
-              Crear platillo en el menú
+            <Button variant="contained" color="primary" type="submit" disabled={formik.isSubmitting}>
+              {savedProduct ? "Reintentar carga de foto" : "Crear platillo en el menú"}
             </Button>
           </form>
         </div>

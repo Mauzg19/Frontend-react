@@ -1,82 +1,77 @@
 import React, { useEffect, useState } from "react";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { green } from "@mui/material/colors";
 import { Button } from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { clearCartAction } from "../../../State/Customers/Cart/cart.action";
 import { api } from "../../../config/api";
+import { clearCartAction } from "../../../State/Customers/Cart/cart.action";
+
+const labels = {
+  paid: "Pago confirmado",
+  pending: "Pago pendiente",
+  cancelled: "Pago cancelado",
+  failed: "Pago fallido",
+  error: "No se pudo consultar el pago",
+  loading: "Consultando el pago…",
+};
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
-  const [invoice, setInvoice] = useState(null);
+  const { search } = useLocation();
+  const { id } = useParams();
+  const orderId = new URLSearchParams(search).get("order_id") || id;
+  const [status, setStatus] = useState("loading");
+  const [attempt, setAttempt] = useState(0);
 
-  // Suponiendo que el orderId viene en el query string (?orderId=123)
   useEffect(() => {
-    dispatch(clearCartAction());
-    const params = new URLSearchParams(location.search);
-    const orderId = params.get("orderId");
-    if (orderId) {
-      const jwt = localStorage.getItem("jwt");
-      api
-        .get(`/api/invoice/${orderId}`, {
-          headers: { Authorization: `Bearer ${jwt}` },
-        })
-        .then((res) => setInvoice(res.data));
+    const jwt = localStorage.getItem("jwt");
+    if (!jwt || !/^\d+$/.test(orderId || "")) {
+      setStatus("error");
+      return undefined;
     }
-  }, []);
+    const controller = new AbortController();
+    setStatus("loading");
+    api.get(`/api/order/${orderId}/payment-status`, {
+      headers: { Authorization: `Bearer ${jwt}` },
+      signal: controller.signal,
+    }).then(async ({ data }) => {
+      const confirmed = data.payment_status?.toLowerCase();
+      setStatus(labels[confirmed] ? confirmed : "error");
+      const key = `checkout-cart:${orderId}`;
+      const savedCart = sessionStorage.getItem(key);
+      if (confirmed !== "paid" || !savedCart) return;
+      try {
+        const snapshot = JSON.parse(savedCart);
+        const { data: cart } = await api.get("/api/cart/", {
+          headers: { Authorization: `Bearer ${jwt}` },
+          signal: controller.signal,
+        });
+        const quantities = new Map(snapshot.map(({ id, quantity }) => [id, quantity]));
+        if (!controller.signal.aborted && cart.items.length === quantities.size &&
+            cart.items.every(({ id, quantity }) => quantities.get(id) === quantity)) {
+          await dispatch(clearCartAction());
+        }
+        if (!controller.signal.aborted) sessionStorage.removeItem(key);
+      } catch {
+        // Keep the snapshot so a reload can retry cart cleanup.
+      }
+    }).catch(() => {
+      if (!controller.signal.aborted) setStatus("error");
+    });
+    return () => controller.abort();
+  }, [orderId, attempt, dispatch]);
 
   return (
-    <div className="min-h-screen  px-5">
-      <div className="flex flex-col items-center justify-center h-[90vh]">
-        <div className="box w-full lg:w-1/4 flex flex-col items-center rounded-md">
-          <TaskAltIcon sx={{ fontSize: "5rem", color: green[600] }} />
-          <h1 className="py-5 text-2xl font-semibold">¡Orden exitosa!</h1>
-          <p className="py-3 text-center text-gray-400">
-            ¡Gracias por elegir nuestro restaurante! Agradecemos tu pedido.
-          </p>
-          <p className="py-2 text-center text-gray-200 text-lg">
-            ¡Que tengas un gran día!
-          </p>
-          {invoice && (
-            <div className="py-4 text-center">
-              <h2 className="font-bold text-lg mb-2">Factura electrónica</h2>
-              <p>Folio: {invoice.folio}</p>
-              {invoice.pdfUrl && (
-                <a
-                  href={invoice.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline block my-2"
-                >
-                  Descargar PDF
-                </a>
-              )}
-              {invoice.xmlUrl && (
-                <a
-                  href={invoice.xmlUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline block my-2"
-                >
-                  Descargar XML
-                </a>
-              )}
-            </div>
-          )}
-          <Button
-            variant="contained"
-            className="my-5"
-            sx={{ margin: "1rem 0rem" }}
-            onClick={() => navigate("/")}
-          >
-            Ir al inicio
-          </Button>
-        </div>
-      </div>
-    </div>
+    <main className="min-h-[60vh] flex flex-col items-center justify-center gap-5 px-5">
+      <h1 className="text-2xl font-semibold" role="status">{labels[status]}</h1>
+      {orderId && <p>Pedido #{orderId}</p>}
+      {(status === "pending" || status === "error") && (
+        <Button onClick={() => setAttempt((current) => current + 1)}>Consultar de nuevo</Button>
+      )}
+      <Button variant="contained" onClick={() => navigate("/my-profile/órdenes")}>
+        Ver mis pedidos
+      </Button>
+    </main>
   );
 };
 

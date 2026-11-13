@@ -8,6 +8,7 @@ import {
   FormGroup,
 } from "@mui/material";
 import React, { useState } from "react";
+import { FOOD_IMAGES, getFoodImage, onImageError } from "../../../config/imageFallbacks";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../../State/Customers/Cart/cart.action";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -54,8 +55,9 @@ const MenuItemCard = ({ item }) => {
             <div className="lg:flex items-center lg:space-x-5">
               <img
                 className="w-[7rem] h-[7rem] object-cover"
-                src={item.images?.[0]}
-                alt=""
+                src={getFoodImage(item)}
+                onError={onImageError(FOOD_IMAGES[0])}
+                alt={item.name}
               />
               <div className="space-y-1 lg:space-y-5 lg:max-w-2xl">
                 <p className="font-semibold text-xl">{item.name}</p>

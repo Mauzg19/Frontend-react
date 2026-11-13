@@ -1,128 +1,60 @@
-import { Box, Modal } from "@mui/material";
-import React from "react";
-import { useLocation } from "react-router-dom";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { useState } from "react";
+import { api } from "../../../config/api";
 
-const initialValues = {
-  streetAddress: "",
-  state: "",
-  pincode: "",
-  city: "",
-};
-
-const validationSchema = Yup.object().shape({
-  streetAddress: Yup.string().required("Street Address is required"),
-  state: Yup.string().required("State is required"),
-  pincode: Yup.string()
-    .required("Pincode is required")
-    .matches(/^\d{6}$/, "Pincode must be 6 digits"),
-  city: Yup.string().required("City is required"),
+export const addressHeaders = () => ({
+  Authorization: `Bearer ${localStorage.getItem("jwt")}`,
 });
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  outline: "none",
-  p: 4,
-};
+const fields = [
+  ["street", "Dirección", true],
+  ["city", "Ciudad", true],
+  ["postalCode", "Código postal", true],
+  ["state", "Departamento", false],
+  ["notes", "Notas de entrega", false],
+];
 
-const NewAddress = ({ open, handleClose }) => {
-  const location = useLocation();
+export default function NewAddress({ open, handleClose, address, onSaved }) {
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (values, { resetForm }) => {
-    console.log("Submitted:", values);
-    resetForm();
+  const submit = async (event) => {
+    event.preventDefault();
+    setError("");
+    setSaving(true);
+    const data = Object.fromEntries(new FormData(event.currentTarget));
+    const config = { headers: addressHeaders() };
+    try {
+      if (address?.id) {
+        await api.put(`/api/users/address/${address.id}`, data, config);
+      } else {
+        await api.post("/api/users/address", { ...data, country: "Colombia" }, config);
+      }
+      await onSaved();
+      handleClose();
+    } catch {
+      setError("No se pudo guardar la dirección. Revisa los datos e intenta de nuevo.");
+    } finally {
+      setSaving(false);
+    }
   };
-  return (
-    <Modal open={open} onClose={handleClose}>
-      <Box sx={style}>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          <Form>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Field
-                  name="streetAddress"
-                  as={TextField}
-                  label="Street Address"
-                  fullWidth
-                  variant="outlined"
-                  error={!ErrorMessage("streetAddress")}
-                  helperText={
-                    <ErrorMessage name="streetAddress">
-                      {(msg) => <span className="text-red-600">{msg}</span>}
-                    </ErrorMessage>
-                  }
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Field
-                  name="state"
-                  as={TextField}
-                  label="State"
-                  fullWidth
-                  variant="outlined"
-                  error={!ErrorMessage("state")}
-                  helperText={
-                    <ErrorMessage name="state">
-                      {(msg) => <span className="text-red-600">{msg}</span>}
-                    </ErrorMessage>
-                  }
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Field
-                  name="pincode"
-                  as={TextField}
-                  label="Pincode"
-                  fullWidth
-                  variant="outlined"
-                  error={!ErrorMessage("pincode")}
-                  helperText={
-                    <ErrorMessage name="pincode">
-                      {(msg) => <span className="text-red-600">{msg}</span>}
-                    </ErrorMessage>
-                  }
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Field
-                  name="city"
-                  as={TextField}
-                  label="City"
-                  fullWidth
-                  variant="outlined"
-                  error={!ErrorMessage("city")}
-                  helperText={
-                    <ErrorMessage name="city">
-                      {(msg) => <span className="text-red-600">{msg}</span>}
-                    </ErrorMessage>
-                  }
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Button type="submit" variant="contained" color="primary">
-                  Deliver Here
-                </Button>
-              </Grid>
-            </Grid>
-          </Form>
-        </Formik>
-      </Box>
-    </Modal>
-  );
-};
 
-export default NewAddress;
+  return (
+    <Dialog open={open} onClose={saving ? undefined : handleClose} fullWidth maxWidth="xs">
+      <form onSubmit={submit}>
+        <DialogTitle>{address ? "Editar dirección" : "Agregar dirección"}</DialogTitle>
+        <DialogContent>
+          {error && <Alert severity="error">{error}</Alert>}
+          {fields.map(([name, label, required]) => (
+            <TextField key={name} name={name} label={label} required={required} fullWidth
+              margin="dense" defaultValue={(name === "street" ? address?.streetAddress : address?.[name]) ?? ""} />
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button disabled={saving} onClick={handleClose}>Cancelar</Button>
+          <Button disabled={saving} type="submit" variant="contained">Guardar dirección</Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
+}

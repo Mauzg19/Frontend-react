@@ -5,9 +5,10 @@ export const getCustomers = () => {
     return async (dispatch) => {
       dispatch({type:GET_CUSTOMERS_REQUEST});
       try {
-        const { data } = await api.get("api/customers");
+        const { data } = await api.get("/api/customers", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        });
         dispatch({type:GET_CUSTOMERS_SUCCESS,payload:data});
-        console.log("created restaurant ", data);
       } catch (error) {
         dispatch({type:GET_CUSTOMERS_FAILURE,error:error.message});
       }
@@ -18,9 +19,10 @@ export const getPendingCustomers = () => {
     return async (dispatch) => {
       dispatch({type:GET_PENDING_CUSTOMERS_REQUEST});
       try {
-        const { data } = await api.get("api/customers");
+        const { data } = await api.get("/api/pending-customers", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        });
         dispatch({type:GET_PENDING_CUSTOMERS_SUCCESS,payload:data});
-        console.log("created restaurant ", data);
       } catch (error) {
         dispatch({type:GET_PENDING_CUSTOMERS_FAILURE,error:error.message});
       }
