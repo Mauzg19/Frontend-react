@@ -9,10 +9,9 @@ const AddressCard = ({ handleSelectAddress,item,showButton }) => {
       <HomeIcon />
 
       <div className="space-y-3 text-gray-500">
-        <h1 className="font-semibold text-lg text-white">Home</h1>
+        <h2 className="font-semibold text-lg text-white">{item.streetAddress}</h2>
         <p>
-          {item.streetAddress}, {item.postalCode}, {item.state}, {item.country}
-          {/* {`${address?.streetAddress} ${address?.city} ${address?.state} ${address?.zipCode}`} */}
+          {[item.city, item.state, item.postalCode, item.country].filter(Boolean).join(", ")}
         </p>
 
         {showButton && <Button

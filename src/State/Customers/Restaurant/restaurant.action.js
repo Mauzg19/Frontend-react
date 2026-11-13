@@ -209,11 +209,12 @@ export const createEventAction = ({ data, jwt,restaurantId }) => {
           },
         }
       );
-      console.log("create events ", res.data);
       dispatch({ type: CREATE_EVENTS_SUCCESS, payload: res.data });
+      return true;
     } catch (error) {
       console.log("catch - ", error);
       dispatch({ type: CREATE_EVENTS_FAILURE, payload: error });
+      return false;
     }
   };
 };

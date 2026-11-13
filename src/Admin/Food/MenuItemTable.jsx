@@ -189,7 +189,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
 
                   {!isDashboard && (
                     <TableCell sx={{ textAlign: "center" }}>
-                      <IconButton onClick={() => handleDeleteFood(item.id)}>
+                      <IconButton aria-label="Eliminar platillo" onClick={() => handleDeleteFood(item.id)}>
                         <DeleteIcon color="error" />
                       </IconButton>
                     </TableCell>
