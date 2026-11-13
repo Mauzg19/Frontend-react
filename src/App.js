@@ -24,9 +24,12 @@ function App() {
     if (jwt) {
       dispatch(getUser(jwt));
       dispatch(findCart(jwt));
-      dispatch(getAllRestaurantsAction(jwt));
     }
   }, [auth.jwt]);
+
+  useEffect(() => {
+    dispatch(getAllRestaurantsAction());
+  }, [dispatch]);
 
   useEffect(() => {
     if (auth.user?.role == "ROLE_RESTAURANT_OWNER") {

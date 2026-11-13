@@ -14,26 +14,14 @@ import {
     TableRow,
     Typography,
   } from "@mui/material";
-  
-  import React, { useEffect } from "react";
-  import { useParams } from "react-router-dom";
-  
-  import { useDispatch, useSelector } from "react-redux";
-  import { getMenuItemsByRestaurantId } from "../../State/Customers/Menu/menu.action";
-  
+
+  import React from "react";
+
+  import { useSelector } from "react-redux";
+
   const RestaurantTable = ({ isDashboard, name }) => {
-    const dispatch = useDispatch();
-    const { restaurant } = useSelector((store) => store);
-    // const { id } = useParams();
-  
-    useEffect(() => {
-      
-    }, []);
-  
-    const handleDeleteProduct = (productId) => {
-      console.log("delete product ", productId);
-    };
-  
+    const restaurant = useSelector((store) => store.restaurant);
+
     return (
       <Box width={"100%"}>
         <Card className="mt-1">
@@ -61,14 +49,14 @@ import {
                 {restaurant.restaurants.slice(0,isDashboard?7:restaurant.restaurants.length).map((item) => (
                   <TableRow
                     hover
-                    key={item.name}
+                    key={item.id}
                     sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
                   >
                     <TableCell>
                       {" "}
                       <Avatar alt={item.name} src={item.imageUrl} />{" "}
                     </TableCell>
-  
+
                     <TableCell
                       sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
                     >
@@ -85,17 +73,17 @@ import {
                       </Box>
                     </TableCell>
                     <TableCell sx={{ textAlign: "center" }}>
-                      {item.owner.fullName}
+                      {item.owner?.fullName || "—"}
                     </TableCell>
                     <TableCell sx={{ textAlign: "center" }}>
                       {item.cuisineType}
                     </TableCell>
                     <TableCell sx={{ textAlign: "center" }}>
-                      {item.address.city}
+                      {item.address?.city || "Sin dirección"}
                     </TableCell>
-  
+
                     {!isDashboard && <TableCell sx={{ textAlign: "center" }}>
-                      {item.contactInformation.email}
+                      {item.contactInformation?.email || "—"}
                     </TableCell>}
                   </TableRow>
                 ))}
@@ -103,7 +91,7 @@ import {
             </Table>
           </TableContainer>
         </Card>
-  
+
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={restaurant.loading}
@@ -113,6 +101,6 @@ import {
       </Box>
     );
   };
-  
+
   export default RestaurantTable;
-  
+

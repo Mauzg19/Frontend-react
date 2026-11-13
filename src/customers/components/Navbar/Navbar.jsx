@@ -125,14 +125,8 @@ const Navbar = () => {
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuItem
-              onClick={() =>
-                auth.user?.role === "ROLE_ADMIN"
-                  ? navigate("/admin")
-                  : navigate("/super-admin")
-              }
-            >
-              Perfil
+            <MenuItem onClick={() => navigate("/super-admin")}>
+              Panel de administración
             </MenuItem>
             <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
           </Menu>

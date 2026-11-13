@@ -20,7 +20,6 @@ import { API_URL, api } from "../../config/api";
 import axios from "axios";
 
 export const registerUser = (reqData) => async (dispatch) => {
-  console.log("resgister request data ",reqData.userData)
   try {
     dispatch({ type: REGISTER_REQUEST });
 
@@ -34,7 +33,6 @@ export const registerUser = (reqData) => async (dispatch) => {
     }
     dispatch({ type: REGISTER_SUCCESS, payload: data.jwt });
   } catch (error) {
-    console.log("catch error ------ ",error)
     dispatch({
       type: REGISTER_FAILURE,
       payload:
@@ -53,6 +51,9 @@ export const loginUser = (reqData) => async (dispatch) => {
     if(data.jwt) localStorage.setItem("jwt",data.jwt)
     if(data.role==="ROLE_RESTAURANT_OWNER"){
       reqData.navigate("/admin/restaurant")
+    }
+    else if (data.role === "ROLE_ADMIN") {
+      reqData.navigate("/super-admin");
     }
     else{
       reqData.navigate("/")
@@ -83,7 +84,6 @@ export const getUser = (token) => {
       const user = response.data;
       
       dispatch({ type: GET_USER_SUCCESS, payload: user });
-      console.log("req User ", user);
     } catch (error) {
       const errorMessage = error.message;
       dispatch({ type: GET_USER_FAILURE, payload: errorMessage });
@@ -117,7 +117,6 @@ export const resetPasswordRequest = (email) => async (dispatch) => {
   try {
     const {data} = await axios.post(`${API_URL}/auth/reset-password-request?email=${email}`,{});
     
-    console.log("reset password -: ", data);
    
     dispatch({type:REQUEST_RESET_PASSWORD_SUCCESS,payload:data});
   } catch (error) {
@@ -131,7 +130,6 @@ export const resetPassword = (reqData) => async (dispatch) => {
   try {
     const {data} = await axios.post(`${API_URL}/auth/reset-password`,reqData.data);
     
-    console.log("reset password -: ", data);
 
     reqData.navigate("/password-change-success")
    
@@ -145,7 +143,11 @@ export const resetPassword = (reqData) => async (dispatch) => {
 export const logout = () => {
   return async (dispatch) => {
     dispatch({ type: LOGOUT });
+    const pbixUrl = localStorage.getItem("pbix_embed_url");
     localStorage.clear();
+    if (pbixUrl) {
+      localStorage.setItem("pbix_embed_url", pbixUrl);
+    }
   };
 };
 

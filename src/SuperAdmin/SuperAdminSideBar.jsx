@@ -20,8 +20,7 @@ const menu = [
   { title: "Panel", icon: <Dashboard />, path: "/" },
   { title: "Restaurantes", icon: <ShoppingBagIcon />, path: "/restaurants" },
   { title: "Clientes", icon: <ShopTwoIcon />, path: "/customers" },
-  { title: "Solicitudes de restaurante", icon: <AddCircleIcon />, path: "/restaurant-request" },
-  { title: "Cerrar sesión", icon: <LogoutIcon />, path: "/" },
+  { title: "Cerrar sesión", icon: <LogoutIcon /> },
 ];
 export default function SuperAdminSidebar({ handleClose, open }) {
   const isSmallScreen = useMediaQuery("(max-width:1080px)");
@@ -31,11 +30,12 @@ export default function SuperAdminSidebar({ handleClose, open }) {
   console.log("restaurantId ",id)
 
   const handleNavigate = (item) => {
-    navigate(`/super-admin${item.path}`);
-    if (item.title === "Logout") {
-      navigate("/");
+    if (!item.path) {
       dispatch(logout());
+      navigate("/");
+      return;
     }
+    navigate(`/super-admin${item.path}`);
     
     
   };

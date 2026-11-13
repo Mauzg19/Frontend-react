@@ -9,6 +9,7 @@ import {
   removeCartItem,
   updateCartItem,
 } from "../../../State/Customers/Cart/cart.action";
+import { FOOD_IMAGES, getFoodImage, onImageError } from "../../../config/imageFallbacks";
 
 const CartItemCard = ({ item }) => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const CartItemCard = ({ item }) => {
   const handleUpdateCartItem = (value) => {
     if(value===-1 && item.quantity==1){
       handleRemoveCartItem()
+      return;
     }
     const data={ cartItemId: item.id, quantity: item.quantity + value }
     dispatch(
@@ -27,20 +29,22 @@ const CartItemCard = ({ item }) => {
     dispatch(removeCartItem({cartItemId:item.id,jwt:auth.jwt || jwt}))
     
   }
+  const fallbackImage = getFoodImage(item?.food);
   return (
     <div className="px-5">
       <div className="lg:flex items-center lg:space-x-5">
         <div>
           <img
             className="w-[5rem] h-[5rem] object-cover"
-            src={item.food.images[0]}
-            alt=""
+            src={fallbackImage}
+            onError={onImageError(FOOD_IMAGES[0])}
+            alt={item?.food?.name || "Plato"}
           />
         </div>
 
         <div className="flex items-center justify-between lg:w-[70%]">
           <div className="space-y-1 lg:space-y-3 w-full ">
-            <p className="">{item.food.name}</p>
+            <p className="">{item.food?.name}</p>
             {
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-1">
@@ -69,7 +73,7 @@ const CartItemCard = ({ item }) => {
         </div>
       </div>
       <div className="pt-3 space-x-2">
-        {item.ingredients.map((item)=><Chip label={item}/> )}
+        {item.ingredients?.map((item)=><Chip key={item} label={item}/> )}
       </div>
       
   </div>

@@ -18,6 +18,7 @@ import {
 
 import React, { useEffect } from "react";
 import formatCurrency from "../../config/formatCurrency";
+import { FOOD_IMAGES, getFoodImage, onImageError } from "../../config/imageFallbacks";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -120,7 +121,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
                 >
                   <TableCell>
                     {" "}
-                    <Avatar alt={item.name} src={item.images[0]} />{" "}
+                    <Avatar alt={item.name} src={getFoodImage(item)} imgProps={{ onError: onImageError(FOOD_IMAGES[0]) }} />{" "}
                   </TableCell>
 
                   <TableCell

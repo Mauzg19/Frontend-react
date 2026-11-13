@@ -53,7 +53,7 @@ export const getAllRestaurantsAction = (token) => {
     try {
       const { data } = await api.get("/api/restaurants", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
       dispatch(getAllRestaurantsSuccess(data));

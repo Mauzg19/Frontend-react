@@ -7,8 +7,6 @@ import {
   Typography,
   CssBaseline,
   Container,
-  MenuItem,
-  Select,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -29,7 +27,6 @@ const validationSchema = Yup.object({
   password: Yup.string()
     .min(6, "Password must be at least 8 characters")
     .required("Password is required"),
-    role: Yup.string().required("Type is required"),
 });
 
 const RegistrationForm = () => {
@@ -40,7 +37,6 @@ const RegistrationForm = () => {
     
     
 
-    console.log("Form values:", values);
     dispatch(registerUser({userData:values,navigate}))
   };
 
@@ -92,20 +88,6 @@ const RegistrationForm = () => {
               id="password"
               helperText={<ErrorMessage name="password" />}
             />
-              <Field
-              className="mt-3"
-              as={Select}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="role"
-              id="role"
-              // autoComplete="role"
-              helperText={<ErrorMessage name="role" />}
-            >
-              <MenuItem value="ROLE_CUSTOMER">Customer</MenuItem>
-              <MenuItem value="ROLE_RESTAURANT_OWNER">Restaurant Owner</MenuItem>
-            </Field>
             <Button
               type="submit"
               fullWidth
