@@ -10,6 +10,7 @@ import CreateRestaurantForm from "./AddRestaurants/CreateRestaurantForm";
 import IngredientTable from "./Events/Events";
 import Category from "./Category/Category";
 import PrediccionCategoria from "./Prediction/PrediccionCategoria";
+import DemandPrediction from "./Prediction/DemandPrediction";
 import Ingredients from "./Ingredients/Ingredients";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -71,6 +72,7 @@ const Admin = () => {
             <Route path="/ingredients" element={<Ingredients />} />
             <Route path="/category" element={<Category />} />
             <Route path="/prediction" element={<PrediccionCategoria />} />
+            <Route path="/demand" element={<DemandPrediction />} />
             <Route path="/details" element={<Details />} />
           </Routes>
         </div>

@@ -26,6 +26,7 @@ const menu = [
   { title: "Eventos", icon: <EventIcon />, path: "/event" },
   { title: "Detalles", icon: <AdminPanelSettingsIcon />, path: "/details" },
   { title: "Predicción de categoría", icon: <CategoryIcon />, path: "/prediction", adminOnly: true },
+  { title: "Minería de demanda", icon: <Dashboard />, path: "/demand", adminOnly: true },
   { title: "Cerrar sesión", icon: <LogoutIcon />, path: "/" },
   
 ];
