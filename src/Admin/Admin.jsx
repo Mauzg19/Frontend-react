@@ -20,7 +20,7 @@ import {
 import { getRestaurantsCategory } from "../State/Customers/Restaurant/restaurant.action";
 import Details from "./Details/Details";
 import AdminNavbar from "./AdminNavbar";
-import { getUsersOrders } from "../State/Customers/Orders/Action";
+
 import { fetchRestaurantsOrder } from "../State/Admin/Order/restaurants.order.action";
 
 const Admin = () => {
@@ -29,30 +29,31 @@ const Admin = () => {
   const handleOpenSideBar = () => setOpenSideBar(true);
   const handleCloseSideBar = () => setOpenSideBar(false);
   const { auth, restaurant } = useSelector((store) => store);
-  const jwt = localStorage.getItem("jwt");
+  const jwt = auth.jwt || localStorage.getItem("jwt");
+  const restaurantId = restaurant.usersRestaurant?.id;
   useEffect(() => {
-    if (restaurant.usersRestaurant) {
+    if (restaurantId && jwt) {
       dispatch(
-        getIngredientCategory({ jwt, id: restaurant.usersRestaurant?.id })
+        getIngredientCategory({ jwt, id: restaurantId })
       );
       dispatch(
-        getIngredientsOfRestaurant({ jwt, id: restaurant.usersRestaurant?.id })
+        getIngredientsOfRestaurant({ jwt, id: restaurantId })
       );
       dispatch(
         getRestaurantsCategory({
-          jwt: auth.jwt || jwt,
-          restaurantId: restaurant.usersRestaurant?.id,
+          jwt,
+          restaurantId,
         })
       );
 
       dispatch(
         fetchRestaurantsOrder({
-          restaurantId: restaurant.usersRestaurant?.id,
-          jwt: auth.jwt || jwt,
+          restaurantId,
+          jwt,
         })
       );
     }
-  }, [restaurant.usersRestaurant]);
+  }, [dispatch, restaurantId, jwt]);
   return (
     <div>
       <AdminNavbar handleOpenSideBar={handleOpenSideBar} />

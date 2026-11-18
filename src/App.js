@@ -10,14 +10,13 @@ import { getUser } from "./State/Authentication/Action";
 import { findCart } from "./State/Customers/Cart/cart.action";
 import {
   getAllRestaurantsAction,
-  getRestaurantById,
-  getRestaurantByUserId,
+  getRestaurantByUserId
 } from "./State/Customers/Restaurant/restaurant.action";
 
 function App() {
   const dispatch = useDispatch();
-  const { auth } = useSelector((store) => store);
-  const jwt = localStorage.getItem("jwt");
+  const auth = useSelector((store) => store.auth);
+  const jwt = auth.jwt || localStorage.getItem("jwt");
   
   useEffect(() => {
     
@@ -25,17 +24,17 @@ function App() {
       dispatch(getUser(jwt));
       dispatch(findCart(jwt));
     }
-  }, [auth.jwt]);
+  }, [dispatch, jwt]);
 
   useEffect(() => {
     dispatch(getAllRestaurantsAction());
   }, [dispatch]);
 
   useEffect(() => {
-    if (auth.user?.role == "ROLE_RESTAURANT_OWNER") {
-      dispatch(getRestaurantByUserId(auth.jwt || jwt));
+    if (auth.user?.role === "ROLE_RESTAURANT_OWNER" && jwt) {
+      dispatch(getRestaurantByUserId(jwt));
     }
-  }, [auth.user]);
+  }, [auth.user?.role, dispatch, jwt]);
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />

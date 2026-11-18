@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Backdrop,
@@ -19,15 +19,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TodayIcon from '@mui/icons-material/Today';
 import { getRestaurantImage, onImageError, resolveProductUpload, RESTAURANT_IMAGES } from "../../../config/imageFallbacks";
 
-const categories = [
-  "Thali",
-  "Starters",
-  "Indian Main Course",
-  "Rice and Biryani",
-  "Breads",
-  "Accompaniments",
-  "Dessert",
-];
+
 
 const foodTypes = [
   {label:"All",value:"all"},
@@ -68,7 +60,7 @@ const Restaurant = () => {
       })
     );
     dispatch(getRestaurantsCategory({restaurantId:id,jwt}))
-  }, [id,foodType,foodCategory]);
+  }, [dispatch,id,foodType,foodCategory,jwt]);
 
   const handleFilter = (e, value) => {
     const searchParams = new URLSearchParams(location.search);

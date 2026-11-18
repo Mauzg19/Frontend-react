@@ -3,13 +3,13 @@ import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 
 import { useMediaQuery } from "@mui/material";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { Dashboard } from "@mui/icons-material";
-import AddIcon from "@mui/icons-material/Add";
-import PersonIcon from "@mui/icons-material/Person";
+
+
 import ShopTwoIcon from "@mui/icons-material/ShopTwo";
 import { logout } from "../State/Authentication/Action";
 import EventIcon from "@mui/icons-material/Event";

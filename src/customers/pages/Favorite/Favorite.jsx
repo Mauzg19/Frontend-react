@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import RestaurantCard from '../../components/RestarentCard/RestaurantCard'
-import { restaurants } from '../../../Data/restaurents'
-import { useDispatch, useSelector } from 'react-redux'
+
+import { useSelector } from 'react-redux';
 
 const Favorite = () => {
   const {auth}=useSelector(store=>store);

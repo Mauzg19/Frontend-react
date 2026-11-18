@@ -1,6 +1,6 @@
 import React from "react";
 import ProfileNavigation from "../../components/ProfileNavigation/ProfileNavigation";
-import { Divider } from "@mui/material";
+
 import { Route, Routes } from "react-router-dom";
 import Orders from "../Orders/Orders";
 import UsersAddresses from "../UsersAdresses/UsersAddresses";

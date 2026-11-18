@@ -7,18 +7,12 @@ import {
   Typography,
   CssBaseline,
   Container,
-  createTheme,
-  ThemeProvider,
   Backdrop,
-  CircularProgress,
+  CircularProgress
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
-import {
-  loginUser,
-  resetPassword,
-  resetPasswordRequest,
-} from "../../../State/Authentication/Action";
+import { resetPasswordRequest } from "../../../State/Authentication/Action";
 
 const initialValues = {
   email: "",
@@ -31,7 +25,7 @@ const validationSchema = Yup.object({
 });
 
 const ResetPasswordRequest = () => {
-  const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const {auth}=useSelector(store=>store)
 

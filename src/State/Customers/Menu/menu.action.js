@@ -3,12 +3,9 @@ import {
   createMenuItemFailure,
   createMenuItemRequest,
   createMenuItemSuccess,
-  deleteMenuItemFailure,
-  deleteMenuItemRequest,
-  deleteMenuItemSuccess,
   getMenuItemsByRestaurantIdFailure,
   getMenuItemsByRestaurantIdRequest,
-  getMenuItemsByRestaurantIdSuccess,
+  getMenuItemsByRestaurantIdSuccess
 } from "./ActionCreators";
 import {
   DELETE_MENU_ITEM_FAILURE,

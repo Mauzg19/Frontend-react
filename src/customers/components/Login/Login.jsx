@@ -1,15 +1,7 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {
-  Button,
-  TextField,
-  Typography,
-  CssBaseline,
-  Container,
-  createTheme,
-  ThemeProvider,
-} from "@mui/material";
+import { Button, TextField, Typography, CssBaseline, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../State/Authentication/Action";

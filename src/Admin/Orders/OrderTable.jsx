@@ -15,19 +15,15 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Typography,
+  TableRow
 } from "@mui/material";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import formatCurrency from "../../config/formatCurrency";
 
-import { useNavigate, useParams } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchRestaurantsOrder,
-  updateOrderStatus,
-} from "../../State/Admin/Order/restaurants.order.action";
+import { updateOrderStatus } from "../../State/Admin/Order/restaurants.order.action";
 import { FOOD_IMAGES, getFoodImage, onImageError } from "../../config/imageFallbacks";
 // import {
 //   confirmOrder,
@@ -47,13 +43,13 @@ const orderStatus = [
 ];
 
 const OrdersTable = ({ isDashboard, name }) => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({ status: "", sort: "" });
+
+
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { restaurantsOrder } = useSelector((store) => store);
   const [anchorElArray, setAnchorElArray] = useState([]);
-  const { id } = useParams();
+
 
   const handleUpdateStatusMenuClick = (event, index) => {
     const newAnchorElArray = [...anchorElArray];

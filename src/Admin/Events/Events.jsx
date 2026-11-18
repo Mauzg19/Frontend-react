@@ -1,19 +1,11 @@
-import {
-  Box,
-  Button,
-  Card,
-  Grid,
-  Modal,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Grid, Modal, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createEventAction,
   getRestaurnatsEvents,
 } from "../../State/Customers/Restaurant/restaurant.action";
-import { useParams } from "react-router-dom";
+
 import EventCard from "./EventCard";
 
 const style = {
@@ -37,14 +29,15 @@ const initialValues = {
 };
 
 const Events = () => {
-  const [image, setimage] = useState("");
+
   const dispatch = useDispatch();
   const { restaurant, auth } = useSelector((store) => store);
   const [openModal, setOpenModal] = useState(false);
   const [error, setError] = useState("");
   const handleCloseModal = () => setOpenModal(false);
   const handleOpenModal = () => setOpenModal(true);
-  const jwt = localStorage.getItem("jwt");
+  const jwt = auth.jwt || localStorage.getItem("jwt");
+  const restaurantId = restaurant.usersRestaurant?.id;
 
   const [formValues, setFormValues] = useState(initialValues);
 
@@ -71,15 +64,15 @@ const Events = () => {
   };
 
   useEffect(() => {
-    if (restaurant.usersRestaurant) {
+    if (restaurantId && jwt) {
       dispatch(
         getRestaurnatsEvents({
-          restaurantId: restaurant.usersRestaurant?.id,
-          jwt: auth.jwt || jwt,
+          restaurantId,
+          jwt,
         })
       );
     }
-  }, [restaurant.usersRestaurant]);
+  }, [dispatch, restaurantId, jwt]);
 
   return (
     <div>

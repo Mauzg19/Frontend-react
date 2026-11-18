@@ -1,17 +1,17 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, makeStyles, Card, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { Create } from '@mui/icons-material';
-import { useParams } from 'react-router-dom';
+import { TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+
+
 import { useDispatch, useSelector } from 'react-redux';
-import { createCategoryAction } from '../../State/Customers/Restaurant/restaurant.action';
+
 import { createIngredient, updateIngredient } from '../../State/Admin/Ingredients/Action';
 
 
 
 const CreateIngredientForm = ({handleClose, initialData = null}) => {
-    const {id}=useParams();
+
     const dispatch=useDispatch();
     const {auth,restaurant,ingredients}=useSelector(store=>store)
     const jwt = localStorage.getItem("jwt")

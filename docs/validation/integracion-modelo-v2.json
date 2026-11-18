@@ -56,7 +56,7 @@
     "Prueba temporal sintética retrospectiva de v1.",
     "Teléfono físico y Stripe aplazados por decisión del usuario."
   ],
-  "legacyWarnings": "npm run build completa con advertencias heredadas. El modo CI estricto falla por esas advertencias fuera del módulo modificado.",
+  "legacyWarnings": "Resultado histórico previo a la limpieza de ESLint. Resuelto con CI=true y cero diagnósticos. Véase eslint-ci-2026-11-18.json.",
   "nativeSuccessfulRuns": [
     "3192ba36d8bc48d786e3754187607323",
     "9296f6a48c704b8ebf32f4847493d652",

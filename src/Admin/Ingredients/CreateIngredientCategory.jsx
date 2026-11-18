@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { TextField, Button, makeStyles, Card, Modal, Box } from "@mui/material";
-import { Create } from "@mui/icons-material";
-import { useParams } from "react-router-dom";
+import { TextField, Button } from "@mui/material";
+
+
 import { useDispatch, useSelector } from "react-redux";
-import { createCategoryAction } from "../../State/Customers/Restaurant/restaurant.action";
+
 import { createIngredientCategory, updateIngredientCategory } from "../../State/Admin/Ingredients/Action";
 
 const CreateIngredientCategoryForm = ({ handleClose, initialCategory = null }) => {
-  const { id } = useParams();
+
   const dispatch = useDispatch();
   const { auth, restaurant } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");

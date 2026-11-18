@@ -1,17 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./Navbar.css";
 import PersonIcon from "@mui/icons-material/Person";
-import {
-  Avatar,
-  Badge,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { Avatar, Badge, IconButton, Menu, MenuItem } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Auth from "../../pages/Auth/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../State/Authentication/Action";
@@ -19,7 +12,7 @@ import { pink } from "@mui/material/colors";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+
   const { auth, cart } = useSelector((store) => store);
   const dispatch = useDispatch();
 
