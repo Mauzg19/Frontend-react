@@ -1,5 +1,5 @@
-import { Button, Card, Divider, IconButton, Snackbar } from "@mui/material";
-import React, { Fragment, useEffect, useState } from "react";
+import { Button, Card, Divider, Snackbar } from "@mui/material";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import AddressCard from "../../components/Address/AddressCard";
 import CartItemCard from "../../components/CartItem/CartItemCard";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,8 +20,6 @@ const initialValues = {
   state: "",
   pincode: "",
   city: "",
-  rfc: "",
-  razonSocial: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -29,8 +27,6 @@ const validationSchema = Yup.object().shape({
   state: Yup.string().required("El estado es obligatorio"),
   pincode: Yup.string().required("El código postal es obligatorio"),
   city: Yup.string().required("La ciudad es obligatoria"),
-  rfc: Yup.string().required("El RFC es obligatorio"),
-  razonSocial: Yup.string().required("La razón social es obligatoria"),
 });
 
 const style = {
@@ -46,11 +42,13 @@ const style = {
 };
 
 const Cart = () => {
-  const [openSnackbar, setOpenSnakbar] = useState();
+  const [checkoutError, setCheckoutError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const checkoutRequest = useRef(null);
+  const submittingRef = useRef(false);
   const dispatch = useDispatch();
   const { cart, auth } = useSelector((store) => store);
   const [openAddressModal, setOpenAddressModal] = useState(false);
-  console.log("cart ", cart);
 
   const handleCloseAddressModal = () => {
     setOpenAddressModal(false);
@@ -60,51 +58,48 @@ const Cart = () => {
 
   useEffect(() => {
     dispatch(findCart(localStorage.getItem("jwt")));
-  }, []);
+  }, [dispatch]);
 
-  const handleSubmit = (values, { resetForm }) => {
-    const data = {
-      jwt: localStorage.getItem("jwt"),
-      order: {
-        restaurantId: cart.cartItems[0].food?.restaurant.id,
-        deliveryAddress: {
-          fullName: auth.user?.fullName,
-          streetAddress: values.streetAddress,
-          city: values.city,
-          state: values.state,
-          postalCode: values.pincode,
-          country: "Mexico",
-        },
-        rfcCliente: values.rfc,
-        razonSocial: values.razonSocial,
+  const startCheckout = async (address) => {
+    if (submittingRef.current) return;
+    if (!cart.cartItems.length || !isValid(cart.cartItems)) {
+      setCheckoutError("El pedido debe contener productos de un solo restaurante.");
+      return;
+    }
+    const order = {
+      restaurantId: cart.cartItems[0].food.restaurant.id,
+      items: cart.cartItems.map((item) => ({
+        menuItemId: item.food.id,
+        quantity: item.quantity,
+        notes: item.notes,
+      })),
+      deliveryAddress: {
+        fullName: address.fullName || auth.user?.fullName,
+        streetAddress: address.streetAddress,
+        city: address.city,
+        state: address.state,
+        postalCode: address.postalCode || address.pincode,
+        country: address.country || "Colombia",
       },
     };
-    if (isValid(cart.cartItems)) {
-      dispatch(createOrder(data));
-    } else setOpenSnakbar(true);
+    const signature = JSON.stringify(order);
+    if (checkoutRequest.current?.signature !== signature) {
+      checkoutRequest.current = { signature, id: crypto.randomUUID() };
+    }
+    submittingRef.current = true;
+    setSubmitting(true);
+    setCheckoutError("");
+    try {
+      const opened = await dispatch(createOrder({
+        order: { ...order, clientRequestId: checkoutRequest.current.id },
+        cartItems: cart.cartItems.map(({ id, quantity }) => ({ id, quantity })),
+      }));
+      if (!opened) setCheckoutError("No se pudo iniciar el pago. Intenta de nuevo.");
+    } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
+    }
   };
-
-  const createOrderUsingSelectedAddress = (deliveryAddress) => {
-    const data = {
-      token: localStorage.getItem("jwt"),
-      order: {
-        restaurantId: cart.cartItems[0].food.restaurant.id,
-        deliveryAddress: {
-          fullName: "ashok",
-          streetAddress: "gujrat",
-          city: "gujrat",
-          state: "gujrat",
-          postalCode: "599000",
-          country: "India",
-        },
-      },
-    };
-    if (isValid(cart.cartItems)) {
-      dispatch(createOrder(data));
-    } else setOpenSnakbar(true);
-  };
-
-  const handleCloseSankBar = () => setOpenSnakbar(false);
 
   return (
     <Fragment>
@@ -112,33 +107,16 @@ const Cart = () => {
         <main className="lg:flex justify-between">
           <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
             {cart.cartItems.map((item, i) => (
-              <CartItemCard item={item} />
+              <CartItemCard key={i} item={item} />
             ))}
 
             <Divider />
             <div className="billDetails px-5 text-sm">
-              <p className="font-extralight py-5">Bill Details</p>
+              <p className="font-extralight py-5">Resumen del pedido</p>
               <div className="space-y-3">
                 <div className="flex justify-between text-gray-400">
-                  <p>Item Total</p>
+                  <p>Total de productos</p>
                   <p>{formatCurrency(cartTotal(cart.cartItems))}</p>
-                </div>
-                <div className="flex justify-between text-gray-400">
-                  <p>Deliver Fee</p>
-                  <p>{formatCurrency(21)}</p>
-                </div>
-                <div className="flex justify-between text-gray-400">
-                  <p>Plateform Fee</p>
-                  <p>{formatCurrency(5)}</p>
-                </div>
-                <div className="flex justify-between text-gray-400">
-                  <p>GST and Restaurant Charges</p>
-                  <p>{formatCurrency(33)}</p>
-                </div>
-                <Divider />
-                <div className="flex justify-between text-gray-400">
-                  <p>Total Pay</p>
-                  <p>{formatCurrency(cartTotal(cart.cartItems) + 33)}</p>
                 </div>
               </div>
             </div>
@@ -152,7 +130,8 @@ const Cart = () => {
               <div className="flex gap-5 flex-wrap justify-center">
                 {auth.user?.addresses.map((item, index) => (
                   <AddressCard
-                    handleSelectAddress={createOrderUsingSelectedAddress}
+                    key={item.id ?? index}
+                    handleSelectAddress={startCheckout}
                     item={item}
                     showButton={true}
                   />
@@ -225,7 +204,7 @@ const Cart = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={handleSubmit}
+            onSubmit={startCheckout}
           >
             {({ values, handleChange }) => (
               <Form>
@@ -291,38 +270,8 @@ const Cart = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <Field
-                      name="rfc"
-                      as={TextField}
-                      label="RFC"
-                      fullWidth
-                      variant="outlined"
-                      error={!ErrorMessage("rfc")}
-                      helperText={
-                        <ErrorMessage name="rfc">
-                          {(msg) => <span className="text-red-600">{msg}</span>}
-                        </ErrorMessage>
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Field
-                      name="razonSocial"
-                      as={TextField}
-                      label="Razón Social"
-                      fullWidth
-                      variant="outlined"
-                      error={!ErrorMessage("razonSocial")}
-                      helperText={
-                        <ErrorMessage name="razonSocial">
-                          {(msg) => <span className="text-red-600">{msg}</span>}
-                        </ErrorMessage>
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button type="submit" variant="contained" color="primary">
-                      Entregar aquí
+                    <Button type="submit" variant="contained" color="primary" disabled={submitting}>
+                      {submitting ? "Abriendo pago…" : "Entregar aquí"}
                     </Button>
                   </Grid>
                 </Grid>
@@ -332,11 +281,10 @@ const Cart = () => {
         </Box>
       </Modal>
       <Snackbar
-        severity="success"
-        open={openSnackbar}
+        open={Boolean(checkoutError)}
         autoHideDuration={6000}
-        onClose={handleCloseSankBar}
-        message="Please Add Items Only From One Restaurants At time"
+        onClose={() => setCheckoutError("")}
+        message={checkoutError}
       />
     </Fragment>
   );

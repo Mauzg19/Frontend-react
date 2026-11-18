@@ -53,7 +53,7 @@ export const getAllRestaurantsAction = (token) => {
     try {
       const { data } = await api.get("/api/restaurants", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
       dispatch(getAllRestaurantsSuccess(data));
@@ -209,11 +209,12 @@ export const createEventAction = ({ data, jwt,restaurantId }) => {
           },
         }
       );
-      console.log("create events ", res.data);
       dispatch({ type: CREATE_EVENTS_SUCCESS, payload: res.data });
+      return true;
     } catch (error) {
       console.log("catch - ", error);
       dispatch({ type: CREATE_EVENTS_FAILURE, payload: error });
+      return false;
     }
   };
 };

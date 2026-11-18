@@ -49,7 +49,7 @@ const EventCard = ({ item,isCustomer }) => {
           </div>
         </CardContent>
     {!isCustomer &&    <CardActions>
-          <IconButton onClick={handleDeleteEvent} aria-label="add to favorites">
+          <IconButton onClick={handleDeleteEvent} aria-label="Eliminar evento">
             <DeleteIcon />
           </IconButton>
         </CardActions>}

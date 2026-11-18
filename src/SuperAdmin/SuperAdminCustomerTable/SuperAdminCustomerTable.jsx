@@ -1,22 +1,21 @@
 import {
-    Avatar,
-    Backdrop,
-    Box,
-    Button,
-    Card,
-    CardHeader,
-    CircularProgress,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography,
-  } from "@mui/material";
+  Avatar,
+  Backdrop,
+  Box,
+  Card,
+  CardHeader,
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from "@mui/material";
   
   import React, { useEffect } from "react";
-  import { useParams } from "react-router-dom";
+
   
   import { useDispatch, useSelector } from "react-redux";
 import { getCustomers } from "../../State/SuperAdmin/superAdmin.action";
@@ -27,11 +26,9 @@ import { getCustomers } from "../../State/SuperAdmin/superAdmin.action";
   
     useEffect(() => {
       dispatch(getCustomers())
-    }, []);
+    }, [dispatch]);
   
-    const handleDeleteProduct = (productId) => {
-      console.log("delete product ", productId);
-    };
+
   
     return (
       <Box width={"100%"}>
@@ -110,4 +107,4 @@ import { getCustomers } from "../../State/SuperAdmin/superAdmin.action";
   };
   
   export default SuperAdminCustomerTable;
-  
+

@@ -1,6 +1,7 @@
 import { Button, Card } from "@mui/material";
 import React from "react";
 import formatCurrency from '../../../config/formatCurrency'
+import { FOOD_IMAGES, getFoodImage, onImageError } from "../../../config/imageFallbacks";
 
 const OrderCard = ({order,status}) => {
   return (
@@ -8,8 +9,9 @@ const OrderCard = ({order,status}) => {
       <div className="flex items-center space-x-5">
         <img
           className="h-16 w-16"
-          src={order.food.images[0]}
-          alt=""
+          src={getFoodImage(order.food)}
+          onError={onImageError(FOOD_IMAGES[0])}
+          alt={order.food.name}
         />
         <div>
           <p>{order.food.name}</p>

@@ -18,7 +18,8 @@ import {
 
 import React, { useEffect } from "react";
 import formatCurrency from "../../config/formatCurrency";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { FOOD_IMAGES, getFoodImage, onImageError } from "../../config/imageFallbacks";
+import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,18 +27,18 @@ import {
   getMenuItemsByRestaurantId,
   updateMenuItemsAvailability,
 } from "../../State/Customers/Menu/menu.action";
-import { updateStockOfIngredient } from "../../State/Admin/Ingredients/Action";
+
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { categorizedIngredients } from "../../customers/util/CategorizeIngredients";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Create, Remove } from "@mui/icons-material";
+import { Create } from "@mui/icons-material";
 
 const MenuItemTable = ({ isDashboard, name }) => {
-  const location = useLocation();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { menu, ingredients, restaurant,auth } = useSelector((store) => store);
-  const { id } = useParams();
+
   const jwt=localStorage.getItem("jwt");
 
   useEffect(() => {
@@ -54,7 +55,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
       }
       
     
-  }, [ingredients.update,restaurant.usersRestaurant]);
+  }, [dispatch, ingredients.update,restaurant.usersRestaurant]);
 
   // console.log(
   //   "-------- ",
@@ -120,7 +121,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
                 >
                   <TableCell>
                     {" "}
-                    <Avatar alt={item.name} src={item.images[0]} />{" "}
+                    <Avatar alt={item.name} src={getFoodImage(item)} imgProps={{ onError: onImageError(FOOD_IMAGES[0]) }} />{" "}
                   </TableCell>
 
                   <TableCell
@@ -188,7 +189,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
 
                   {!isDashboard && (
                     <TableCell sx={{ textAlign: "center" }}>
-                      <IconButton onClick={() => handleDeleteFood(item.id)}>
+                      <IconButton aria-label="Eliminar platillo" onClick={() => handleDeleteFood(item.id)}>
                         <DeleteIcon color="error" />
                       </IconButton>
                     </TableCell>

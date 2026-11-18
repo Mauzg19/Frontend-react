@@ -1,0 +1,204 @@
+{
+  "date": "2026-11-18",
+  "previousHead": "b698cb0b4c16c1439fc5d93fb42407a32d23fb36",
+  "lintBefore": {
+    "no-unused-vars": 129,
+    "react-hooks/exhaustive-deps": 12,
+    "eqeqeq": 2
+  },
+  "lintAfter": {
+    "files": 126,
+    "warnings": 0,
+    "errors": 0
+  },
+  "strictBuild": {
+    "command": "CI=true npm run build",
+    "exit": 0,
+    "receipt": "809f4d7c57a4418794caf960ff716969"
+  },
+  "lintCommand": {
+    "command": "npm run lint",
+    "maxWarnings": 0,
+    "exit": 0,
+    "receipt": "3dc23e9c771b436c87b603d97be73f9b"
+  },
+  "reactTests": {
+    "passed": 10,
+    "failed": 0,
+    "suites": 5,
+    "receipt": "96a9f9e5055c4a14b92f6526420326d7"
+  },
+  "e2e": [
+    {
+      "group": "roles",
+      "receipt": "7c23f92f0de64997a9f75a0783c92126"
+    },
+    {
+      "group": "checkout",
+      "receipt": "f8457879ff0549ac88dbb1bddd34053e"
+    },
+    {
+      "group": "secondary",
+      "receipt": "cf54fbf3aee14f3ea67b58e7d56e5e38"
+    },
+    {
+      "group": "demand",
+      "receipt": "ae8e8aac3d0f4e65808c2073822a01f8"
+    },
+    {
+      "group": "demand",
+      "receipt": "af2b81f830934deb96b2c784fd171349"
+    },
+    {
+      "group": "demand",
+      "receipt": "c652a59212684001a072ca22164b8395"
+    },
+    {
+      "group": "kitchen",
+      "receipt": "bd35049c7a42414bafda568bd1093a68"
+    },
+    {
+      "group": "repeat-2-web-roles",
+      "receipt": "218f69b6ba374aeabd1ac1f7e673e67f"
+    },
+    {
+      "group": "repeat-2-web_checkout",
+      "receipt": "259064f2c18c4d739ff455761cc9d7af"
+    },
+    {
+      "group": "repeat-2-web-secondary",
+      "receipt": "5442741529b2454da09fe4322d7389a5"
+    },
+    {
+      "group": "repeat-3-web-roles",
+      "receipt": "4986e81bc1f8441faa9de2369f48fd5f"
+    },
+    {
+      "group": "repeat-3-web_checkout",
+      "receipt": "c3d36a64304841c6a4572d2a954ad74b"
+    },
+    {
+      "group": "repeat-3-web-secondary",
+      "receipt": "593ddce0d2e342f284d3bd1a92349d75"
+    }
+  ],
+  "negativeControls": {
+    "checkout-mutant": {
+      "receipt": "8bbea9fbeccb4ad1897ebdf258e89766",
+      "cause": "El pedido enviado no existe al releer el servidor",
+      "detected": true
+    },
+    "demand-mutant": {
+      "receipt": "3b42f0b8c8ae4163b16b8a383ded9d29",
+      "cause": "La predicción HTTP no coincide con los pesos de Keras",
+      "detected": true
+    }
+  },
+  "roles": [
+    {
+      "role": "visitante",
+      "catalogImage": true,
+      "adminRedirect": true
+    },
+    {
+      "role": "cliente",
+      "favoritesPersist": true,
+      "notificationsView": true,
+      "ownerRedirect": true,
+      "usersApi": 403
+    },
+    {
+      "role": "propietario",
+      "menuVisible": true,
+      "globalAdminRedirect": true
+    },
+    {
+      "role": "administrador",
+      "restaurantsVisible": true,
+      "customersVisible": true,
+      "logout": true
+    },
+    {
+      "role": "gerente",
+      "ownerRedirect": true,
+      "kitchenApi": 403,
+      "dedicatedPanel": false
+    }
+  ],
+  "secondary": {
+    "registration": "ROLE_CUSTOMER",
+    "address": {
+      "id": 7,
+      "editedInPlace": true,
+      "deleted": true
+    },
+    "reset": {
+      "smtpLocal": true,
+      "previousPasswordRejected": true,
+      "signIn": true
+    },
+    "events": {
+      "id": 3,
+      "created": true,
+      "visibleInFeed": true,
+      "deleted": true
+    },
+    "product": {
+      "id": 7,
+      "price": 16000,
+      "photoMatchesSource": true,
+      "deleted": true
+    }
+  },
+  "kitchen": {
+    "orderId": 8,
+    "payment": "PAID",
+    "status": "PREPARING",
+    "persistsAfterReload": true
+  },
+  "demand": {
+    "roles": {
+      "cliente": 403,
+      "gerente": 403,
+      "admin": 200,
+      "cocina": 200
+    },
+    "predictions": [
+      {
+        "product": "Alitas BBQ",
+        "units": 27.4168962238763
+      },
+      {
+        "product": "Burrito",
+        "units": 35.6770849723893
+      },
+      {
+        "product": "Ensalada",
+        "units": 25.639930310055636
+      },
+      {
+        "product": "Hamburguesa",
+        "units": 49.577291514433696
+      },
+      {
+        "product": "Pizza",
+        "units": 33.1248467912166
+      }
+    ],
+    "viewports": [
+      1440,
+      768,
+      390
+    ],
+    "result": "pass"
+  },
+  "executableHashes": {
+    "asset-manifest.json": "085c88c7564ce4d7a8b4677906fb073364caddf66d8ff8877907fa2dda942947",
+    "index.html": "0667af6281a408aee00880f24306418f38c628bc4663953180d9caaa28dc63b8",
+    "manifest.json": "33fdb99cc2cd3ad8e1815b18b7005eb3f58048990d80ee7c73aed28ab69a4e19",
+    "static/css/main.430a556e.css": "8aafaa7c9bccbd2af9d7d84ba412832af9def2e6112de32d524ad8b365154b07",
+    "static/js/787.b7c9c4a7.chunk.js": "8d46dfd538ed579586858cd5dd30cd55eaac99f400427a3dab7dadc7adfcda02",
+    "static/js/main.421f6cfd.js": "56dc403df22b5b0fbaa85a58a8a448193ff67186ba798ceff4f35812aea37570"
+  },
+  "scope": "Build React de producción con backend v2 y base sintética nueva. Pago simulado y SMTP local. No se prueban Stripe remoto ni teléfono físico."
+}

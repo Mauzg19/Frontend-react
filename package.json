@@ -31,6 +31,7 @@
     "yup": "^1.2.0"
   },
   "scripts": {
+    "lint": "eslint src --ext .js,.jsx --max-warnings=0",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

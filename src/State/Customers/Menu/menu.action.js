@@ -3,12 +3,9 @@ import {
   createMenuItemFailure,
   createMenuItemRequest,
   createMenuItemSuccess,
-  deleteMenuItemFailure,
-  deleteMenuItemRequest,
-  deleteMenuItemSuccess,
   getMenuItemsByRestaurantIdFailure,
   getMenuItemsByRestaurantIdRequest,
-  getMenuItemsByRestaurantIdSuccess,
+  getMenuItemsByRestaurantIdSuccess
 } from "./ActionCreators";
 import {
   DELETE_MENU_ITEM_FAILURE,
@@ -36,9 +33,11 @@ export const createMenuItem = ({menu,jwt}) => {
       });
       console.log("created menu ", data);
       dispatch(createMenuItemSuccess(data));
+      return data;
     } catch (error) {
       console.log("catch error ", error);
       dispatch(createMenuItemFailure(error));
+      return null;
     }
   };
 };

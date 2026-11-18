@@ -15,14 +15,16 @@ export const createOrder = (reqData) => async (dispatch) => {
         },
       }
     );
-    if(data.payment_url){
-      window.location.href=data.payment_url;
+    if (!data.payment_url) throw new Error("El servidor no devolvió el enlace de pago.");
+    if (data.order_id && reqData.cartItems) {
+      sessionStorage.setItem(`checkout-cart:${data.order_id}`, JSON.stringify(reqData.cartItems));
     }
-    console.log("created order data",data)
     dispatch(createOrderSuccess(data));
+    window.location.assign(data.payment_url);
+    return true;
   } catch (error) {
-    console.log("error ",error)
     dispatch(createOrderFailure(error));
+    return false;
   }
 };
 
@@ -49,7 +51,11 @@ export const getUsersNotificationAction = () => {
   return async (dispatch) => {
     dispatch(createOrderRequest());
     try {
-      const {data} = await api.get('/api/notifications');
+      const {data} = await api.get('/api/notifications', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      });
      
       console.log("all notifications ",data)
       dispatch({type:GET_USERS_NOTIFICATION_SUCCESS,payload:data});

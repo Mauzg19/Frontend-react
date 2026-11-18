@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, makeStyles, Card } from '@mui/material';
-import { Create } from '@mui/icons-material';
+import { TextField, Button } from '@mui/material';
+
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCategoryAction, updateCategoryAction } from '../../State/Customers/Restaurant/restaurant.action';

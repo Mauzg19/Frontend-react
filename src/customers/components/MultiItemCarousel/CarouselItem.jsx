@@ -1,5 +1,5 @@
 import React from 'react'
-import { topMeels } from '../../../Data/topMeels'
+
 
 const CarouselItem = ({image,title}) => {
   return (

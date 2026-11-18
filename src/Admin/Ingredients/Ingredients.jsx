@@ -16,18 +16,14 @@ import {
 } from "@mui/material";
 
 import CreateIngredientCategoryForm from "./CreateIngredientCategory";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CreateIngredientForm from "./CreateIngredientForm";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteIngredient, deleteIngredientCategory } from '../../State/Admin/Ingredients/Action';
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getIngredientCategory,
-  getIngredientsOfRestaurant,
-  updateStockOfIngredient,
-} from "../../State/Admin/Ingredients/Action";
-import { getRestaurantById } from "../../State/Customers/Restaurant/restaurant.action";
+import { updateStockOfIngredient } from "../../State/Admin/Ingredients/Action";
+
 
 const style = {
   position: "absolute",
@@ -43,7 +39,7 @@ const style = {
 
 const Ingredients = () => {
   const dispatch = useDispatch();
-  const { auth, restaurant, ingredients } = useSelector((store) => store);
+  const { auth, ingredients } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
 
   const [openIngredientCategory, setOpenIngredientCategory] = useState(false);
