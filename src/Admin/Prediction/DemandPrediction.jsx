@@ -51,9 +51,11 @@ export default function DemandPrediction() {
   }
   if (!report) return <Box p={3}>{error ? <><Alert severity="error">{error}</Alert><Button onClick={() => setAttempt(attempt+1)}>Reintentar</Button></> : <CircularProgress aria-label="Cargando modelo" />}</Box>;
   const test = report.metrics['Red neuronal'];
+  const training = report.training;
   const rows = report.predictions.filter(row => row.product === form.product);
   return <Box sx={{p:{xs:2, md:4}, maxWidth:1400, mx:'auto'}}>
     <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap"><Typography variant="h4">Minería de demanda</Typography><Chip label="Datos sintéticos · prototipo académico" color="warning" variant="outlined" /></Stack>
+    {report.modelId && <Typography sx={{mt:1}}>Modelo {report.modelId}</Typography>}
     <Typography sx={{mt:1, mb:3, color:'text.secondary'}}>Estima unidades por producto para un día. Historial simulado de un restaurante; separado de tus pedidos operativos.</Typography>
     <Stack direction={{xs:'column', sm:'row'}} spacing={2} sx={{mb:3}}>
       {[[number(report.rawRows),'Registros sintéticos'], [number(test.MAE),'MAE · unidades'], [number(test.RMSE),'RMSE · unidades'], [number(test.R2),'R² · prueba']].map(([v,l]) => <Paper key={l} variant="outlined" sx={{p:2, flex:1}}><Typography variant="h4">{v}</Typography><Typography>{l}</Typography></Paper>)}
@@ -72,13 +74,15 @@ export default function DemandPrediction() {
     </Paper>
     <Paper variant="outlined" sx={{p:3,mb:3}}><Lines rows={rows} keys={['actual','predicted']} title={`Observado y predicho · ${form.product}`} label={r=>r.date}/><Typography sx={{mt:1}}>Prueba cronológica, un día adelante con historia conocida hasta el día anterior. Unidades por día.</Typography></Paper>
     <Box sx={{display:'grid',gridTemplateColumns:{xs:'1fr',md:'1fr 1fr'},gap:3}}>
-      <Paper variant="outlined" sx={{p:3,minWidth:0}}><Lines rows={report.history} keys={['train','validation']} title="Curva de aprendizaje" label={r=>`Época ${r.epoch}`}/><Typography sx={{mt:1}}>Pérdida MSE + regularización, reescalada. Se restauraron los pesos de la época {report.bestEpoch}; {report.epochs} épocas ejecutadas.</Typography></Paper>
+      <Paper variant="outlined" sx={{p:3,minWidth:0}}><Lines rows={report.history} keys={['train','validation']} title="Curva de aprendizaje" label={r=>`Época ${r.epoch}`}/><Typography sx={{mt:1}}>{report.historyMetric === 'MAE' ? 'Error absoluto medio (MAE), en unidades.' : 'Pérdida MSE + regularización, reescalada.'} Se restauraron los pesos de la época {report.bestEpoch}; {report.epochs} épocas ejecutadas.</Typography></Paper>
       <Paper variant="outlined" sx={{p:3}}><Typography variant="h6" gutterBottom>Comparación en la misma prueba</Typography>
         <Box component="table" sx={{width:'100%', '& th, & td':{py:1,textAlign:'left',borderBottom:'1px solid #444'}}}><thead><tr><th>Modelo</th><th>MAE</th><th>RMSE</th><th>R²</th></tr></thead><tbody>{Object.entries(report.metrics).map(([name,m]) => <tr key={name}><td>{name}</td><td>{number(m.MAE)}</td><td>{number(m.RMSE)}</td><td>{number(m.R2)}</td></tr>)}</tbody></Box>
         <Typography sx={{mt:2}}>Menor MAE es mejor. R² no es un porcentaje de exactitud. Mejor MAE observado en este escenario: {report.bestTestMAE}.</Typography>
       </Paper>
     </Box>
-    <Paper variant="outlined" sx={{p:3,mt:3}}><Typography variant="h6">Cómo se entrenó</Typography><Typography>Red densa {report.architecture.join(' → ')} · ReLU · Dropout 10% · L2 · Adam · {report.parameters} parámetros.</Typography>
+    <Paper variant="outlined" sx={{p:3,mt:3}}><Typography variant="h6">Cómo se entrenó</Typography><Typography>Red densa {report.architecture.join(' → ')} · ReLU · Dropout {training ? number(training.dropout * 100) : 10}% · L2{training ? ` ${Number(training.l2).toLocaleString('es-CO', { maximumFractionDigits: 4 })}` : ''} · Adam · {report.parameters} parámetros.</Typography>
+      {training && <Typography>Lotes de {training.batchSize}. Selección por {training.selectionMetric}.</Typography>}
+      {report.comparison && <Typography>MAE anterior {number(report.comparison.previous.MAE)}; MAE actual {number(test.MAE)}. Reducción descriptiva del {number(report.comparison.maeReductionPercent)}% sobre la misma prueba sintética previamente evaluada.</Typography>}
       {Object.entries(report.splits).map(([name,s]) => <Typography key={name}>{({train:'Entrenamiento',validation:'Validación',test:'Prueba'})[name]}: {s.start} a {s.end}, {s.rows} filas.</Typography>)}
       <Typography sx={{mt:1}}>Escalado ajustado solo en entrenamiento. {report.warmupRows} filas iniciales se usan para construir la historia de siete días.</Typography>
       <Alert severity="warning" sx={{mt:2}}>Las métricas corresponden exclusivamente a datos sintéticos. El modelo debe validarse con ventas reales antes de tomar decisiones de inventario.</Alert>
