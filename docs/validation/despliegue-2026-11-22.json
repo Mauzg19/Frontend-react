@@ -1,0 +1,265 @@
+{
+  "date": "2026-11-22",
+  "deployment": "Oracle /srv/restaurantfast/releases/20261122-r4",
+  "url": "https://restaurantfast.40.233.20.55.sslip.io",
+  "apk": {
+    "file": "RestaurantFast-1.0.1.apk",
+    "sha256": "9d0a14663fb55ebda4e144d02b1e585fad34bfdb2c6cf5196ab40012d5f4b83f",
+    "bytes": 69495011,
+    "versionName": "1.0.1",
+    "versionCode": 2,
+    "package": "com.example.restaurantapp",
+    "certificateSha256": "97117e96370a386b8d6569d2969b28a642cc4a824160cde62bb7c3ada71da52e",
+    "modelId": "demanda-mlp-v2-seed42",
+    "modelAssets": {
+      "model.json": "180be8f1e58938ff847eabe44640cf38b0d62475e0465163c3c99fbb98287cba",
+      "report.json": "756e967843fb508a0af53f92031f31740fa02fdcafae24a5137d4e8e01c076db"
+    },
+    "apiUrl": "https://restaurantfast.40.233.20.55.sslip.io",
+    "abis": [
+      "lib/arm64-v8a/libapp.so",
+      "lib/armeabi-v7a/libapp.so",
+      "lib/x86_64/libapp.so"
+    ],
+    "signatureVerified": true,
+    "privateValuesScan": "no matches in APK entries"
+  },
+  "backendJarSha256": "2527b8021f56aa92f846a4a2d79165272d9676f1a77cdd49c6f7ff950eb6a97b",
+  "webFiles": {
+    "robots.txt": "e5ab0d231eeb01b4a982d1c79a6729cac9797ad15a69247e4f28ba6afc149b4c",
+    "logo.svg": "6000b0e9b0b05b3f112de04f0d039768a1db63588ff9b6ef7099dbd71632f383",
+    "Imagotipo.jpg": "68b68e0ac1a45d3bc5bb10fb89769f4545daf39604cbce3ea188223a6954729f",
+    "index.html": "f539a59e80104b301fce00cdee116be9a6ba3b909cc650fecd59834a1207cbd1",
+    "favicon.ico": "3d10f7da6c603178340081668c4ac5b3ae9743ca9a262ab0fcd312fbb9f48bdd",
+    "Logo-eslogan.png": "b6d2383f7631a639340dd7435640bfbca7c9878602807d13718be17ffc149f51",
+    "logo192.png": "c386396ec70db3608075b5fbfaac4ab1ccaa86ba05a68ab393ec551eb66c3e00",
+    "asset-manifest.json": "7e9ce1247dfedb4ec32d1348aaa327dc35c50f88f33a410793034b0623a01fd8",
+    "logo512.png": "9ea4f4da7050c0cc408926f6a39c253624e9babb1d43c7977cd821445a60b461",
+    "manifest.json": "33fdb99cc2cd3ad8e1815b18b7005eb3f58048990d80ee7c73aed28ab69a4e19",
+    "static/media/slick.295183786cd8a1389865.woff": "26726bac4060abb1226e6ceebc1336e84930fe7a7af1b3895a109d067f5b5dcc",
+    "static/media/slick.2630a3e3eab21c607e21.svg": "12459f221a0b787bf1eaebf2e4c48fca2bd9f8493f71256c3043e7a0c7e932f6",
+    "static/media/slick.a4e97f5a2a64f0ab1323.eot": "06d80cf01250132fd1068701108453feee68854b750d22c344ffc0de395e1dcb",
+    "static/media/slick.c94f7671dcc99dce43e2.ttf": "37bc99cfdbbc046193a26396787374d00e7b10d3a758a36045c07bd8886360d2",
+    "static/css/main.430a556e.css": "8aafaa7c9bccbd2af9d7d84ba412832af9def2e6112de32d524ad8b365154b07",
+    "static/css/main.430a556e.css.map": "b182414806627eb240291fc09146c0ee54b63a530cf2c64aabf285861c79936f",
+    "static/js/main.eab9c486.js.LICENSE.txt": "cfac823cd9aad720f55a55e2cc4b95ad69428e8308bac20500bab9bed331ab97",
+    "static/js/787.b7c9c4a7.chunk.js.map": "7a2cb26b4311cb027e40cc5a539a2efa3b05cb688d12630905b6a59ea068fbde",
+    "static/js/787.b7c9c4a7.chunk.js": "8d46dfd538ed579586858cd5dd30cd55eaac99f400427a3dab7dadc7adfcda02",
+    "static/js/main.eab9c486.js": "7638dd0ecdc46287f51e689f4142593f7b79ecb7d198b0ccac4cfd9c5397fbc5",
+    "static/js/main.eab9c486.js.map": "58760d1f7b732746d44cabb36297ec401f3e59625887eedd98a49ea98061ea2f",
+    "assets/generated/restaurant-italian.png": "423f5d265bef11f303639c718260427c8420f9fe09aebd6cfac18b6813c4262d",
+    "assets/generated/restaurant-pizza.png": "252ab3b536c0bf6a91c60ad216ded7f9b4a49d46cdb3fdf892e8cd617eaa1e3a",
+    "assets/generated/restaurant-burger.png": "99f0e9b4764d8cf8e50264dbd38e3bb9bab10a4706bcd7dbc7da1dc0c4612c7c",
+    "assets/generated/food-burger.png": "32214ecb59183d53acaccaaa7ef933eeefc91520276b13d30b1dd65747871722",
+    "assets/generated/food-pizza.png": "a56cbde1542f1e12a1701d9397111ada0b888119e1b5e8c74dd452cbbc3df2ad",
+    "assets/generated/food-pasta.png": "6adb3dfa67ce4ec45ae2610857acd6ff65e3376e043f92aa9723e0bf8ae49740"
+  },
+  "publicReadback": {
+    "url": "https://restaurantfast.40.233.20.55.sslip.io",
+    "catalog": 5,
+    "restaurants": 1,
+    "categories": 1,
+    "photos": [
+      {
+        "product": "Hamburguesa",
+        "path": "/uploads/product-images/burger.jpg",
+        "size": [
+          1280,
+          964
+        ],
+        "sha256": "94a2e14aa3c76bff0b3bed57d7b12d28ee553c39db3773566476760c9eb10661"
+      },
+      {
+        "product": "Pizza",
+        "path": "/uploads/product-images/pizza.jpg",
+        "size": [
+          1280,
+          853
+        ],
+        "sha256": "4b5feb19b283986e6b27cb022ed5a96094af273dbc9de6345aa1eae5d7c244db"
+      },
+      {
+        "product": "SÃ¡ndwich",
+        "path": "/uploads/product-images/sandwich.jpg",
+        "size": [
+          640,
+          480
+        ],
+        "sha256": "373619c3dbd4c592029675b1d3a0644090491d4d07905bc52c77df2195faea0c"
+      },
+      {
+        "product": "Arroz",
+        "path": "/uploads/product-images/rice.jpg",
+        "size": [
+          640,
+          640
+        ],
+        "sha256": "8210175ecbf81e76167a77f01d201b566de19da3bfb659bd60bdc214463bd24d"
+      },
+      {
+        "product": "Jugo de naranja",
+        "path": "/uploads/product-images/oranges.jpg",
+        "size": [
+          1280,
+          853
+        ],
+        "sha256": "4b3349bddc40c29ea7d60e64bac3249133c90a0d0b098032eac40ea03ec87f1c"
+      }
+    ],
+    "roles": {
+      "cliente": {
+        "role": "ROLE_CUSTOMER",
+        "demandStatus": 403,
+        "profileStatus": 202
+      },
+      "gerente": {
+        "role": "ROLE_RESTAURANT_MANAGER",
+        "demandStatus": 403,
+        "profileStatus": 202
+      },
+      "propietario": {
+        "role": "ROLE_RESTAURANT_OWNER",
+        "demandStatus": 200,
+        "profileStatus": 202
+      },
+      "administrador": {
+        "role": "ROLE_ADMIN",
+        "demandStatus": 200,
+        "profileStatus": 202
+      }
+    },
+    "predictions": [
+      {
+        "product": "Alitas BBQ",
+        "units": 27.4168962238763
+      },
+      {
+        "product": "Burrito",
+        "units": 35.6770849723893
+      },
+      {
+        "product": "Ensalada",
+        "units": 25.639930310055636
+      },
+      {
+        "product": "Hamburguesa",
+        "units": 49.577291514433696
+      },
+      {
+        "product": "Pizza",
+        "units": 33.1248467912166
+      }
+    ],
+    "operatingOrders": 14,
+    "syntheticSalesCop": 816000,
+    "https": true,
+    "adminWriteDenied": true
+  },
+  "checks": {
+    "flutter": 76,
+    "java": 32,
+    "react": 15,
+    "nativeScenarios": 5,
+    "nativeRoles": 4,
+    "kerasFrozenPredictions": 300,
+    "nativeRestartPhases": [
+      "prime",
+      "reopen-airplane",
+      "sync-no-duplicate"
+    ]
+  },
+  "receipts": {
+    "flutter-final": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\flutter-final\\8771e6d3ddcf4895a7d5ec9580bbb06a",
+      "id": "8771e6d3ddcf4895a7d5ec9580bbb06a",
+      "exit": 0
+    },
+    "backend-final": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\backend-final\\2ef110d77ac34b019705ccb2493f58a3",
+      "id": "2ef110d77ac34b019705ccb2493f58a3",
+      "exit": 0
+    },
+    "react-menu-final": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\react-menu-final\\177fbf16a99846f685b996b714115cdb",
+      "id": "177fbf16a99846f685b996b714115cdb",
+      "exit": 0
+    },
+    "web-menu-final-build": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\web-menu-final-build\\8ae910387f984791b7c73ea81130f1b8",
+      "id": "8ae910387f984791b7c73ea81130f1b8",
+      "exit": 0
+    },
+    "android-release": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\android-release\\bec9a4bc90684cada4e76ab66a44135c",
+      "id": "bec9a4bc90684cada4e76ab66a44135c",
+      "exit": 0
+    },
+    "native-demand": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\native-demand\\9472302deeef4e54bdc93083769273b7",
+      "id": "9472302deeef4e54bdc93083769273b7",
+      "exit": 0
+    },
+    "native-cache-prime-preserved": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\native-cache-prime-preserved\\121c1bc1ba824ba299b74e2236e9d04a",
+      "id": "121c1bc1ba824ba299b74e2236e9d04a",
+      "exit": 0
+    },
+    "native-cache-reopen-preserved": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\native-cache-reopen-preserved\\5b86617eb6c04753b0c242208940ddbc",
+      "id": "5b86617eb6c04753b0c242208940ddbc",
+      "exit": 0
+    },
+    "native-cache-sync": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\native-cache-sync\\86e1e81223124208a6983d634307cbc5",
+      "id": "86e1e81223124208a6983d634307cbc5",
+      "exit": 0
+    },
+    "gateway-before": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\gateway-before\\af7ed3b3a18941459227dad03be36613",
+      "id": "af7ed3b3a18941459227dad03be36613",
+      "exit": 1
+    },
+    "gateway-after": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\gateway-after\\aa90174424fa4b45b3552217dab71eaa",
+      "id": "aa90174424fa4b45b3552217dab71eaa",
+      "exit": 0
+    },
+    "local-model-mutant-final": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\local-model-mutant-final\\f3c836619866472d8924b31d06d96e32",
+      "id": "f3c836619866472d8924b31d06d96e32",
+      "exit": 1
+    },
+    "public-catalog-before-web": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\public-catalog-before-web\\de25b5b4a7cc4292aac7d1a43cd09673",
+      "id": "de25b5b4a7cc4292aac7d1a43cd09673",
+      "exit": 1
+    },
+    "public-catalog-before-java": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\public-catalog-before-java\\187e343f686a40c1b680fced76fdfc52",
+      "id": "187e343f686a40c1b680fced76fdfc52",
+      "exit": 1
+    },
+    "demo-seed-before": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\demo-seed-before\\48831c44b2044520a580ea9fc18cd303",
+      "id": "48831c44b2044520a580ea9fc18cd303",
+      "exit": 1
+    },
+    "menu-defaults-before": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\menu-defaults-before\\8b3e1b73a9dc4a8690a242f3af9bf2f4",
+      "id": "8b3e1b73a9dc4a8690a242f3af9bf2f4",
+      "exit": 1
+    },
+    "lint-final": {
+      "path": "C:\\My Projects\\Universidad\\RestaurantFast-sustentacion\\release-20261122\\evidence\\lint-final\\da5e01a0bb3a48c18c6e16fc1c84edcb",
+      "id": "da5e01a0bb3a48c18c6e16fc1c84edcb",
+      "exit": 0
+    }
+  },
+  "limits": [
+    "Telefono fisico y Stripe real aplazados",
+    "SMTP/Ollama no configurados",
+    "Fotos remotas sin cache persistente en disco",
+    "Analytics legado restaurant_dw y Power BI fuera de esta validacion",
+    "Recorridos nativos instrumentados; APK final con firma/instalacion/arranque verificados"
+  ]
+}

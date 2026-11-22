@@ -46,12 +46,17 @@ export const getMenuItemsByRestaurantId = (reqData) => {
   return async (dispatch) => {
     dispatch(getMenuItemsByRestaurantIdRequest());
     try {
+      const filters = new URLSearchParams({
+        vegetarian: String(reqData.vegetarian === true),
+        nonveg: String(reqData.nonveg === true),
+        seasonal: String(reqData.seasonal === true),
+        food_category: reqData.foodCategory || "",
+      });
       const { data } = await api.get(
-        `/api/food/restaurant/${reqData.restaurantId}?vegetarian=${reqData.vegetarian}&nonveg=${reqData.nonveg}
-        &seasonal=${reqData.seasonal}&food_category=${reqData.foodCategory}`,
+        `/api/food/restaurant/${reqData.restaurantId}?${filters}`,
         {
           headers: {
-            Authorization: `Bearer ${reqData.jwt}`,
+            ...(reqData.jwt && { Authorization: `Bearer ${reqData.jwt}` }),
           },
         }
       );
@@ -69,7 +74,7 @@ export const searchMenuItem = ({keyword,jwt}) => {
     try {
       const { data } = await api.get(`api/food/search?name=${keyword}`,{
         headers: {
-          Authorization: `Bearer ${jwt}`,
+          ...(jwt && { Authorization: `Bearer ${jwt}` }),
         },
       });
       console.log("data ----------- ", data);
@@ -88,7 +93,7 @@ export const getAllIngredientsOfMenuItem = (reqData) => {
         `api/food/restaurant/${reqData.restaurantId}`,
         {
           headers: {
-            Authorization: `Bearer ${reqData.jwt}`,
+            ...(reqData.jwt && { Authorization: `Bearer ${reqData.jwt}` }),
           },
         }
       );
