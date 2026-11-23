@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Backdrop,
@@ -6,7 +6,6 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
-  Grid,
   Radio,
   RadioGroup,
   Typography,
@@ -17,23 +16,16 @@ import { getRestaurantById, getRestaurantsCategory } from "../../../State/Custom
 import { getMenuItemsByRestaurantId } from "../../../State/Customers/Menu/menu.action";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TodayIcon from '@mui/icons-material/Today';
+import { getRestaurantImage, onImageError, resolveProductUpload, RESTAURANT_IMAGES } from "../../../config/imageFallbacks";
 
-const categories = [
-  "Thali",
-  "Starters",
-  "Indian Main Course",
-  "Rice and Biryani",
-  "Breads",
-  "Accompaniments",
-  "Dessert",
-];
+
 
 const foodTypes = [
   {label:"All",value:"all"},
   { label: "Vegetarian Only", value: "vegetarian" },
   { label: "Non-Vegetarian Only", value: "non_vegetarian" },
   {label:"Seasonal",value:"seasonal"},
-  
+
 ];
 const Restaurant = () => {
   const dispatch = useDispatch();
@@ -47,6 +39,13 @@ const Restaurant = () => {
   const foodType = searchParams.get("food_type");
   const foodCategory = searchParams.get("food_category");
   const jwt=localStorage.getItem("jwt")
+  const currentRestaurant = restaurant.restaurant;
+  const secondPhoto = resolveProductUpload(currentRestaurant?.images?.[1]);
+  const thirdPhoto = resolveProductUpload(currentRestaurant?.images?.[2]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   useEffect(() => {
     dispatch(
@@ -66,69 +65,62 @@ const Restaurant = () => {
       })
     );
     dispatch(getRestaurantsCategory({restaurantId:id,jwt}))
-  }, [id,foodType,foodCategory]);
+  }, [dispatch,id,foodType,foodCategory,jwt]);
 
   const handleFilter = (e, value) => {
     const searchParams = new URLSearchParams(location.search);
-  
+
     if(value==="all"){
       searchParams.delete(e.target.name);
       searchParams.delete("food_category");
     }
-    else searchParams.set(e.target.name, e.target.value); 
+    else searchParams.set(e.target.name, e.target.value);
 
     const query = searchParams.toString();
     navigate({ search: `?${query}` });
   };
 
   return (
-    <><div className="px-5 lg:px-20 ">
+    <><div className="px-5 pt-6 lg:px-20 lg:pt-10">
       <section>
-        <h3 className="text-gray-500 py-2 mt-10">
-          Home/{restaurant.restaurant?.address.country}/
-          {restaurant.restaurant?.name}/{restaurant.restaurant?.id}/Order Online
-        </h3>
+        <div className="pb-5">
+          <h1 className="text-4xl font-semibold">{currentRestaurant?.name}</h1>
+          <p className="text-gray-400 mt-1">{currentRestaurant?.description}</p>
+        </div>
         <div>
-         
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
+
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-[7fr_5fr] lg:grid-rows-2">
             <img
-            className="w-full h-[40vh] object-cover"
-            src={restaurant.restaurant?.images[0]}
-            alt=""
-          />
-            </Grid>
-            <Grid item xs={12} lg={6}>
+              className="col-span-2 w-full aspect-[4/3] object-cover lg:col-span-1 lg:row-span-2 lg:aspect-auto lg:h-[432px]"
+              src={getRestaurantImage(currentRestaurant)}
+              onError={onImageError(RESTAURANT_IMAGES[0])}
+              alt={currentRestaurant?.name || "Restaurante"}
+            />
             <img
-            className="w-full h-[40vh] object-cover"
-            src={restaurant.restaurant?.images[1]}
-            alt=""
-          />
-            </Grid>
-            <Grid item xs={12} lg={6}>
+              className="w-full aspect-[4/3] object-cover lg:aspect-auto lg:h-[208px]"
+              src={secondPhoto || RESTAURANT_IMAGES[1]}
+              onError={onImageError(RESTAURANT_IMAGES[1])}
+              alt={secondPhoto ? "Segunda foto del restaurante" : "Pizza de referencia"}
+            />
             <img
-            className="w-full h-[40vh] object-cover"
-            src={restaurant.restaurant?.images[2]}
-            alt=""
-          />
-            </Grid>
-          </Grid>
+              className="w-full aspect-[4/3] object-cover lg:aspect-auto lg:h-[208px]"
+              src={thirdPhoto || RESTAURANT_IMAGES[2]}
+              onError={onImageError(RESTAURANT_IMAGES[2])}
+              alt={thirdPhoto ? "Tercera foto del restaurante" : "Sándwich de referencia"}
+            />
+          </div>
         </div>
         <div className="pt-3 pb-5">
-          <h1 className="text-4xl font-semibold">
-            {restaurant.restaurant?.name}
-          </h1>
-          <p className="text-gray-500 mt-1">{restaurant.restaurant?.description}</p>
           <div className="space-y-3 mt-3">
               <p className="text-gray-500 flex items-center gap-3">
-            <LocationOnIcon/> <span>{restaurant.restaurant?.address.streetAddress}
-              </span> 
+            <LocationOnIcon/> <span>{currentRestaurant?.address?.streetAddress || currentRestaurant?.address?.city || "Dirección no registrada"}
+              </span>
           </p>
           <p className="flex items-center gap-3 text-gray-500">
-           <TodayIcon/> <span className=" text-orange-300"> {restaurant.restaurant?.openingHours} (Today)</span>  
+           <TodayIcon/> <span className="text-orange-300">{currentRestaurant?.openingHours || "Horario no registrado"}</span>
           </p>
           </div>
-        
+
         </div>
       </section>
       <Divider />
@@ -136,7 +128,7 @@ const Restaurant = () => {
       <section className="pt-[2rem] lg:flex relative ">
         <div className="space-y-10 lg:w-[20%] filter">
           <div className="box space-y-5 lg:sticky top-28">
-            
+
             <div className="">
               <Typography sx={{ paddingBottom: "1rem" }} variant="h5">
                 Food Type
@@ -167,7 +159,7 @@ const Restaurant = () => {
                   onChange={handleFilter}
                 >
                    <FormControlLabel
-                      
+
                       value={"all"}
                       control={<Radio />}
                       label={"All"}
@@ -198,12 +190,12 @@ const Restaurant = () => {
     <Backdrop
   sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
   open={menu.loading || restaurant.loading}
-  
+
 >
   <CircularProgress color="inherit" />
 </Backdrop>
     </>
-    
+
   );
 };
 

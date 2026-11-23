@@ -1,11 +1,12 @@
 import { Button, Card, CardContent, CardHeader, IconButton } from "@mui/material";
 import React from "react";
 import formatCurrency from '../../../config/formatCurrency'
-import StarIcon from "@mui/icons-material/Star";
+
 import EastIcon from "@mui/icons-material/East";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../../State/Customers/Cart/cart.action";
 import { useNavigate } from "react-router-dom";
+import { getFoodFallback, getFoodImage, onImageError } from "../../../config/imageFallbacks";
 
 const SearchDishCard = ({item}) => {
     const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const SearchDishCard = ({item}) => {
     <Card className=" m-3">
       <CardHeader className="text-sm"
         action={
-          <IconButton onClick={()=>navigate(`/restaurant/${item.restaurant.address.city}/${item.restaurant.name}/${item.restaurant.id}`)} aria-label="settings">
+          <IconButton onClick={()=>navigate(`/restaurant/${item.restaurant.id}`)} aria-label="Ver restaurante">
             <EastIcon />
           </IconButton>
         }
@@ -45,8 +46,9 @@ const SearchDishCard = ({item}) => {
           <div className="flex flex-col justify-center items-center space-y-2">
             <img
               className="w-[5rem] h-[5rem]"
-              src={item.images[0]}
-              alt=""
+              src={getFoodImage(item)}
+              onError={onImageError(getFoodFallback(item))}
+              alt={item.name}
             />
             <Button onClick={handleAddItemToCart} size="small">Add</Button>
           </div>

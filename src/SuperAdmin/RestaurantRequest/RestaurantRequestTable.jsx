@@ -16,14 +16,14 @@ import {
   } from "@mui/material";
   
   import React, { useEffect } from "react";
-  import { useParams } from "react-router-dom";
   
-  import { useDispatch, useSelector } from "react-redux";
-  import { getMenuItemsByRestaurantId } from "../../State/Customers/Menu/menu.action";
+
+  import { useSelector } from "react-redux";
+
 import formatCurrency from "../../config/formatCurrency";
   
   const RestaurantRequestTable = ({ isDashboard, name }) => {
-    const dispatch = useDispatch();
+
     const { menu } = useSelector((store) => store);
     // const { id } = useParams();
   
@@ -121,4 +121,4 @@ import formatCurrency from "../../config/formatCurrency";
   };
   
   export default RestaurantRequestTable;
-  
+

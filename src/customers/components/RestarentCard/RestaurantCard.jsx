@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToFavorites } from "../../../State/Authentication/Action";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { isPresentInFavorites } from "../../../config/logic";
+import { getRestaurantImage, onImageError, RESTAURANT_IMAGES } from "../../../config/imageFallbacks";
 
-const RestaurantCard = ({ data, index }) => {
+const RestaurantCard = ({ data }) => {
   const navigate = useNavigate();
   const { auth } = useSelector((store) => store);
   const jwt=localStorage.getItem("jwt");
@@ -16,12 +17,16 @@ const RestaurantCard = ({ data, index }) => {
   const dispatch = useDispatch();
 
   const handleAddToFavorites = () => {
+    if (!jwt) {
+      navigate("/account/login");
+      return;
+    }
     dispatch(addToFavorites({restaurantId:data.id,jwt:auth.jwt||jwt}));
   };
 
   const navigateToRestaurant = () => {
     if(data.open)
-    navigate(`/restaurant/${data.address.city}/${data.name}/${data.id}`);
+    navigate(`/restaurant/${data.id}`);
   };
 
   return (
@@ -29,8 +34,9 @@ const RestaurantCard = ({ data, index }) => {
       <div onClick={navigateToRestaurant} className={`${data.open?"cursor-pointer":"cursor-not-allowed"}  relative`}>
         <img
           className="w-full h-[10rem] rounded-t-md object-cover "
-          src={data.images[0]}
-          alt=""
+          src={getRestaurantImage(data)}
+          onError={onImageError(RESTAURANT_IMAGES[0])}
+          alt={data.name}
         />
         <Chip
           size="small"
@@ -54,7 +60,7 @@ const RestaurantCard = ({ data, index }) => {
         </div>
 
         <div>
-          <IconButton onClick={handleAddToFavorites}>
+          <IconButton aria-label={isPresentInFavorites(auth.favorites, data) ? "Quitar de favoritos" : "Agregar a favoritos"} onClick={handleAddToFavorites}>
             {isPresentInFavorites(auth.favorites, data) ? (
               <FavoriteIcon color="primary" />
             ) : (

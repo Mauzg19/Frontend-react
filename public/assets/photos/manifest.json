@@ -1,0 +1,106 @@
+[
+  {
+    "file": "pizza.jpg",
+    "url": "https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_1280.jpg",
+    "sha256": "4b5feb19b283986e6b27cb022ed5a96094af273dbc9de6345aa1eae5d7c244db",
+    "width": 1280,
+    "height": 853,
+    "bytes": 434528
+  },
+  {
+    "file": "burger.jpg",
+    "url": "https://cdn.pixabay.com/photo/2016/03/05/19/02/hamburger-1238246_1280.jpg",
+    "sha256": "94a2e14aa3c76bff0b3bed57d7b12d28ee553c39db3773566476760c9eb10661",
+    "width": 1280,
+    "height": 964,
+    "bytes": 306614
+  },
+  {
+    "file": "sandwich.jpg",
+    "url": "https://cdn.pixabay.com/photo/2019/04/08/18/35/sandwich-4112566_640.jpg",
+    "sha256": "373619c3dbd4c592029675b1d3a0644090491d4d07905bc52c77df2195faea0c",
+    "width": 640,
+    "height": 480,
+    "bytes": 113794
+  },
+  {
+    "file": "rice.jpg",
+    "url": "https://cdn.pixabay.com/photo/2015/10/01/14/26/fried-rice-967081_640.jpg",
+    "sha256": "8210175ecbf81e76167a77f01d201b566de19da3bfb659bd60bdc214463bd24d",
+    "width": 640,
+    "height": 640,
+    "bytes": 169357
+  },
+  {
+    "file": "cake.jpg",
+    "url": "https://cdn.pixabay.com/photo/2016/03/27/22/38/cake-1284548_640.jpg",
+    "sha256": "da8740bd54e280f8e7638fbf0d35dc35cd64479fc20c86f2ff2f4d8b9a5b364a",
+    "width": 640,
+    "height": 424,
+    "bytes": 69811
+  },
+  {
+    "file": "biryani.jpg",
+    "url": "https://cdn.pixabay.com/photo/2022/06/14/18/57/chicken-biryani-7262650_640.jpg",
+    "sha256": "96a976950738782c2bd23f3b7ffd49d59862f1302e93dfa188207bdb6df6f280",
+    "width": 640,
+    "height": 427,
+    "bytes": 141010
+  },
+  {
+    "file": "thali.jpg",
+    "url": "https://cdn.pixabay.com/photo/2012/07/09/07/16/thali-51996_1280.jpg",
+    "sha256": "9137853ae80b08dde8eb2bf70dca7dd17097129e5983e55504b6f404d0e9a261",
+    "width": 1280,
+    "height": 960,
+    "bytes": 452199
+  },
+  {
+    "file": "north-indian.jpg",
+    "url": "https://images.pexels.com/photos/4331490/pexels-photo-4331490.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sha256": "62e9ebb3c0115a80bca14e47e3fb05b8e5303062d7a3ec7398757e916df8f3aa",
+    "width": 600,
+    "height": 338,
+    "bytes": 53479
+  },
+  {
+    "file": "egg-roll.jpg",
+    "url": "https://cdn.pixabay.com/photo/2017/08/25/15/10/egg-roll-2680478_640.jpg",
+    "sha256": "15bcfba63c862fd42a6dc8edf3e2107e0a7689d3e98f73269e33fbcd82906e78",
+    "width": 640,
+    "height": 426,
+    "bytes": 78112
+  },
+  {
+    "file": "chicken.jpg",
+    "url": "https://images.pexels.com/photos/2313686/pexels-photo-2313686.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sha256": "345bbbee2be291b3f8303aa9446940438cf07880766b9560a6fb508bdfce5423",
+    "width": 600,
+    "height": 400,
+    "bytes": 54773
+  },
+  {
+    "file": "noodles.jpg",
+    "url": "https://images.pexels.com/photos/2764905/pexels-photo-2764905.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sha256": "1ed784b8984b8d8df8923073bc63d6bca802d9a08f1e961c56a0f2fe25af3581",
+    "width": 600,
+    "height": 381,
+    "bytes": 30343
+  },
+  {
+    "file": "dosa.jpg",
+    "url": "https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sha256": "da5a2fb4c5ddf26ccc7f7cb5dc86c733c30c2b088e32d70d7c05f0c311e1aa96",
+    "width": 600,
+    "height": 788,
+    "bytes": 144730
+  },
+  {
+    "file": "oranges.jpg",
+    "url": "https://cdn.pixabay.com/photo/2020/02/15/20/56/oranges-4852041_1280.jpg",
+    "sha256": "4b3349bddc40c29ea7d60e64bac3249133c90a0d0b098032eac40ea03ec87f1c",
+    "width": 1280,
+    "height": 853,
+    "bytes": 206658
+  }
+]

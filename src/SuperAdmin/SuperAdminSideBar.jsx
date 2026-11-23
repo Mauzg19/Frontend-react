@@ -3,25 +3,24 @@ import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 
 import { useMediaQuery } from "@mui/material";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { Dashboard } from "@mui/icons-material";
-import AddIcon from "@mui/icons-material/Add";
-import PersonIcon from "@mui/icons-material/Person";
+
+
 import ShopTwoIcon from "@mui/icons-material/ShopTwo";
 import { logout } from "../State/Authentication/Action";
-import StorefrontIcon from '@mui/icons-material/Storefront';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+
+
 
 const menu = [
 
   { title: "Panel", icon: <Dashboard />, path: "/" },
   { title: "Restaurantes", icon: <ShoppingBagIcon />, path: "/restaurants" },
   { title: "Clientes", icon: <ShopTwoIcon />, path: "/customers" },
-  { title: "Solicitudes de restaurante", icon: <AddCircleIcon />, path: "/restaurant-request" },
-  { title: "Cerrar sesión", icon: <LogoutIcon />, path: "/" },
+  { title: "Cerrar sesión", icon: <LogoutIcon /> },
 ];
 export default function SuperAdminSidebar({ handleClose, open }) {
   const isSmallScreen = useMediaQuery("(max-width:1080px)");
@@ -31,11 +30,12 @@ export default function SuperAdminSidebar({ handleClose, open }) {
   console.log("restaurantId ",id)
 
   const handleNavigate = (item) => {
-    navigate(`/super-admin${item.path}`);
-    if (item.title === "Logout") {
-      navigate("/");
+    if (!item.path) {
       dispatch(logout());
+      navigate("/");
+      return;
     }
+    navigate(`/super-admin${item.path}`);
     
     
   };

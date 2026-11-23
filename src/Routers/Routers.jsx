@@ -1,17 +1,19 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import CustomerRoutes from "./CustomerRoutes";
-import Admin from "../Admin/Admin";
-import AdminDashboard from "../Admin/Dashboard/AdminDashboard";
 import SuperAdmin from "../SuperAdmin/SuperAdmin";
 import { useSelector } from "react-redux";
-import NotFound from "../customers/pages/NotFound/NotFound";
-import IngredientsList from "../Data/Demo";
-import CreateRestaurantForm from "../Admin/AddRestaurants/CreateRestaurantForm";
 import AdminRouters from "./AdminRouters";
 
 const Routers = () => {
   const { auth } = useSelector((store) => store);
+  const role = auth.user?.role;
+  const checkingSession = !role && localStorage.getItem("jwt") && !auth.error;
+  const restricted = (allowed, page) => {
+    if (checkingSession) return <p role="status">Comprobando sesión…</p>;
+    if (role === allowed) return page;
+    return <Navigate replace to={role ? "/" : "/account/login"} />;
+  };
 
   return (
     <>
@@ -20,7 +22,11 @@ const Routers = () => {
       
       <Route
         path="/admin/restaurant/*"
-        element={<AdminRouters/>}
+        element={restricted("ROLE_RESTAURANT_OWNER", <AdminRouters />)}
+      />
+      <Route
+        path="/super-admin/*"
+        element={restricted("ROLE_ADMIN", <SuperAdmin />)}
       />
       <Route path="/*" element={<CustomerRoutes />} />
     </Routes>

@@ -53,7 +53,7 @@ export const getAllRestaurantsAction = (token) => {
     try {
       const { data } = await api.get("/api/restaurants", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
       dispatch(getAllRestaurantsSuccess(data));
@@ -70,7 +70,7 @@ export const getRestaurantById = (reqData) => {
     try {
       const response = await api.get(`api/restaurants/${reqData.restaurantId}`, {
         headers: {
-          Authorization: `Bearer ${reqData.jwt}`,
+          ...(reqData.jwt && { Authorization: `Bearer ${reqData.jwt}` }),
         },
       });
       dispatch(getRestaurantByIdSuccess(response.data));
@@ -81,22 +81,29 @@ export const getRestaurantById = (reqData) => {
   };
 };
 
+let ownerRestaurantRequestId = 0;
+
 export const getRestaurantByUserId = (jwt) => {
   return async (dispatch) => {
-    dispatch({ type: GET_RESTAURANT_BY_USER_ID_REQUEST });
+    if (!jwt) return;
+    const meta = { jwt, requestId: ++ownerRestaurantRequestId };
+    dispatch({ type: GET_RESTAURANT_BY_USER_ID_REQUEST, meta });
     try {
       const { data } = await api.get(`/api/admin/restaurants/user`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       });
-      console.log("get restaurant by user id ", data);
-      dispatch({ type: GET_RESTAURANT_BY_USER_ID_SUCCESS, payload: data });
+      // Spring returns 200 with an empty body when the owner has no restaurant.
+      const restaurant = data === "" || data === null ? null : data;
+      if (restaurant !== null && !Number.isInteger(restaurant?.id)) {
+        throw new Error("El servidor devolvió un restaurante inválido.");
+      }
+      dispatch({ type: GET_RESTAURANT_BY_USER_ID_SUCCESS, payload: restaurant, meta });
     } catch (error) {
-      console.log("catch error ", error);
       dispatch({
         type: GET_RESTAURANT_BY_USER_ID_FAILURE,
-        payload: error.message,
+        meta,
       });
     }
   };
@@ -209,11 +216,12 @@ export const createEventAction = ({ data, jwt,restaurantId }) => {
           },
         }
       );
-      console.log("create events ", res.data);
       dispatch({ type: CREATE_EVENTS_SUCCESS, payload: res.data });
+      return true;
     } catch (error) {
       console.log("catch - ", error);
       dispatch({ type: CREATE_EVENTS_FAILURE, payload: error });
+      return false;
     }
   };
 };
@@ -337,7 +345,7 @@ export const getRestaurantsCategory = ({ jwt,restaurantId }) => {
     try {
       const res = await api.get(`/api/category/restaurant/${restaurantId}`, {
         headers: {
-          Authorization: `Bearer ${jwt}`,
+          ...(jwt && { Authorization: `Bearer ${jwt}` }),
         },
       });
       console.log("get restaurants category ", res.data);

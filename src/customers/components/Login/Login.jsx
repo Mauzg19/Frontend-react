@@ -1,15 +1,7 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {
-  Button,
-  TextField,
-  Typography,
-  CssBaseline,
-  Container,
-  createTheme,
-  ThemeProvider,
-} from "@mui/material";
+import { Button, TextField, Typography, CssBaseline, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../State/Authentication/Action";
@@ -31,7 +23,6 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const handleSubmit = (values) => {
     // You can handle login submission here, e.g., send data to your server
-    console.log("Login form values:", values);
     dispatch(loginUser({ data: values, navigate }));
   };
 
@@ -75,8 +66,14 @@ const LoginForm = () => {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              sx={{ mt: 2,padding:"1rem" }}
+              sx={{
+                mt: 2,
+                padding:"1rem",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#ff9800", // naranja más claro
+                }
+              }}
             >
               Iniciar sesión
             </Button>
@@ -84,7 +81,7 @@ const LoginForm = () => {
         </Formik>
         <Typography variant="body2" align="center" sx={{ mt: 3 }}>
           ¿No tienes una cuenta?{" "}
-          <Button onClick={() => navigate("/account/register")}> 
+          <Button onClick={() => navigate("/account/register")} sx={{ color: "#ffb74d" }}>
             Registrarse
           </Button>
         </Typography>

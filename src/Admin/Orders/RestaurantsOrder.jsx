@@ -8,7 +8,7 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRestaurantsOrder } from "../../State/Admin/Order/restaurants.order.action";
 
@@ -22,23 +22,25 @@ const RestaurantsOrder = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id } = useParams();
-  const jwt = localStorage.getItem("jwt");
-  const { restaurant, auth } = useSelector((store) => store);
+
+  const auth = useSelector((store) => store.auth);
+  const jwt = auth.jwt || localStorage.getItem("jwt");
+  const restaurantId = useSelector((store) => store.restaurant.usersRestaurant?.id);
 
   const decodedQueryString = decodeURIComponent(location.search);
   const searchParams = new URLSearchParams(decodedQueryString);
   const filterValue = searchParams.get("order_status");
 
   useEffect(() => {
+    if (!restaurantId || !jwt) return;
     dispatch(
       fetchRestaurantsOrder({
-        restaurantId: restaurant.usersRestaurant?.id,
+        restaurantId,
         orderStatus: filterValue,
-        jwt: auth.jwt || jwt,
+        jwt,
       })
     );
-  }, [auth.jwt, filterValue]);
+  }, [dispatch, jwt, restaurantId, filterValue]);
 
   const handleFilter = (e, value) => {
     const searchParams = new URLSearchParams(location.search);

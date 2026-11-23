@@ -1,9 +1,11 @@
 // Reducers.js
 import * as actionTypes from "./ActionTypes";
+import { LOGOUT } from "../../Authentication/ActionType";
 
 const initialState = {
   restaurants: [],
   usersRestaurant: null,
+  ownerRestaurantLookup: null,
   restaurant: null,
   loading: false,
   error: null,
@@ -14,6 +16,26 @@ const initialState = {
 
 const restaurantReducer = (state = initialState, action) => {
   switch (action.type) {
+    case LOGOUT:
+      return { ...state, usersRestaurant: null, ownerRestaurantLookup: null };
+    case actionTypes.GET_RESTAURANT_BY_USER_ID_REQUEST:
+      return {
+        ...state,
+        usersRestaurant: state.ownerRestaurantLookup?.jwt === action.meta.jwt
+          ? state.usersRestaurant : null,
+        ownerRestaurantLookup: { ...action.meta, status: "loading" },
+      };
+    case actionTypes.GET_RESTAURANT_BY_USER_ID_SUCCESS:
+    case actionTypes.GET_RESTAURANT_BY_USER_ID_FAILURE:
+      if (state.ownerRestaurantLookup?.requestId !== action.meta.requestId) return state;
+      if (action.type === actionTypes.GET_RESTAURANT_BY_USER_ID_FAILURE) {
+        return { ...state, ownerRestaurantLookup: { ...action.meta, status: "error" } };
+      }
+      return {
+        ...state,
+        usersRestaurant: action.payload,
+        ownerRestaurantLookup: { ...action.meta, status: "resolved" },
+      };
     case actionTypes.CREATE_RESTAURANT_REQUEST:
     case actionTypes.GET_ALL_RESTAURANTS_REQUEST:
     case actionTypes.DELETE_RESTAURANT_REQUEST:
@@ -44,7 +66,6 @@ const restaurantReducer = (state = initialState, action) => {
         loading: false,
         restaurant: action.payload,
       };
-    case actionTypes.GET_RESTAURANT_BY_USER_ID_SUCCESS:
     case actionTypes.UPDATE_RESTAURANT_STATUS_SUCCESS:
     case actionTypes.UPDATE_RESTAURANT_SUCCESS:
       return {
@@ -61,9 +82,7 @@ const restaurantReducer = (state = initialState, action) => {
         restaurants: state.restaurants.filter(
           (item) => item.id !== action.payload
         ),
-        usersRestaurant: state.usersRestaurant.filter(
-          (item) => item.id !== action.payload
-        ),
+        usersRestaurant: state.usersRestaurant?.id === action.payload ? null : state.usersRestaurant,
       };
 
     case actionTypes.CREATE_EVENTS_SUCCESS:

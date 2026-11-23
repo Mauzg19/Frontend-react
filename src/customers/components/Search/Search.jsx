@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { topMeels } from "../../../Data/topMeels";
 import { PopularCuisines } from "./PopularCuisines";
@@ -6,7 +6,7 @@ import SearchDishCard from "./SearchDishCard";
 import { useDispatch, useSelector } from "react-redux";
 import { searchMenuItem } from "../../../State/Customers/Menu/menu.action";
 
-const dish = [1, 1, 1, 1];
+
 const Search = () => {
   const dispatch = useDispatch();
   const { menu,auth } = useSelector((store) => store);

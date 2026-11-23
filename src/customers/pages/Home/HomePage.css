@@ -1,5 +1,4 @@
 .banner{
-    background-image: url("https://cdn.pixabay.com/photo/2020/02/15/20/56/oranges-4852041_1280.jpg");
     background-size: cover; /* Adjust as needed */
     background-repeat: no-repeat;
     width: 100%;
@@ -57,4 +56,3 @@
    
  }
   }
-  

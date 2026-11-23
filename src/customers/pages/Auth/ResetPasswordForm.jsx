@@ -27,15 +27,8 @@ function ResetPasswordForm() {
     confirmedPassword: "",
   };
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    // Handle form submission here
-    console.log(values);
-    if (values.password === values.confirmedPassword) {
-      console.log("yes its working....");
-    }
-    const data = { password: values.password, token };
-    dispatch(resetPassword({ navigate, data }));
-    setSubmitting(false);
+  const handleSubmit = async (values) => {
+    await dispatch(resetPassword({ navigate, data: { password: values.password, token } }));
   };
 
   return (

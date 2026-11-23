@@ -1,5 +1,4 @@
 import {
-  Badge,
   Button,
   Card,
   CardContent,
@@ -8,7 +7,7 @@ import {
   Modal,
   Box,
   TextField,
-  IconButton,
+  IconButton
 } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import React from "react";
@@ -26,7 +25,7 @@ import {
 
 const Details = () => {
   const dispatch = useDispatch();
-  const { auth, restaurant, ingredients } = useSelector((store) => store);
+  const { auth, restaurant } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
 
   const [openEdit, setOpenEdit] = React.useState(false);
