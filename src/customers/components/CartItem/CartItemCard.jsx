@@ -5,7 +5,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useDispatch, useSelector } from "react-redux";
 import { removeCartItem, updateCartItem } from "../../../State/Customers/Cart/cart.action";
-import { FOOD_IMAGES, getFoodImage, onImageError } from "../../../config/imageFallbacks";
+import { getFoodFallback, getFoodImage, onImageError } from "../../../config/imageFallbacks";
 
 const CartItemCard = ({ item }) => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const CartItemCard = ({ item }) => {
           <img
             className="w-[5rem] h-[5rem] object-cover"
             src={fallbackImage}
-            onError={onImageError(FOOD_IMAGES[0])}
+            onError={onImageError(getFoodFallback(item?.food))}
             alt={item?.food?.name || "Plato"}
           />
         </div>

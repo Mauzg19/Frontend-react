@@ -9,6 +9,8 @@ import { createStore } from 'redux';
 import { render, screen } from '@testing-library/react';
 import RestaurantTable from './SuperAdmin/Restaurants/RestaurantTable';
 
+jest.mock('./config/api', () => ({ API_URL: 'https://api.example.test' }));
+
 test('Redux store initializes with expected shape', () => {
   const state = store.getState();
   expect(state).toHaveProperty('auth');
@@ -50,4 +52,6 @@ test('super admin restaurant table tolerates restaurants without address or imag
 
   expect(screen.getByText('Restaurante sin direccion')).toBeInTheDocument();
   expect(screen.getByText('Sin dirección')).toBeInTheDocument();
+  expect(screen.getByRole('img', { name: 'Restaurante sin direccion' }))
+    .toHaveAttribute('src', '/assets/photos/burger.jpg');
 });

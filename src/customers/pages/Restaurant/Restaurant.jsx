@@ -6,7 +6,6 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
-  Grid,
   Radio,
   RadioGroup,
   Typography,
@@ -41,6 +40,8 @@ const Restaurant = () => {
   const foodCategory = searchParams.get("food_category");
   const jwt=localStorage.getItem("jwt")
   const currentRestaurant = restaurant.restaurant;
+  const secondPhoto = resolveProductUpload(currentRestaurant?.images?.[1]);
+  const thirdPhoto = resolveProductUpload(currentRestaurant?.images?.[2]);
 
   useEffect(() => {
     dispatch(
@@ -84,32 +85,26 @@ const Restaurant = () => {
         </h3>
         <div>
 
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-[7fr_5fr] lg:grid-rows-2">
             <img
-            className="w-full h-[40vh] object-cover"
-            src={getRestaurantImage(currentRestaurant, 0)}
-            onError={onImageError(RESTAURANT_IMAGES[0])}
-            alt={currentRestaurant?.name || "Restaurante"}
-          />
-            </Grid>
-            <Grid item xs={12} lg={6}>
+              className="col-span-2 w-full aspect-[4/3] object-cover lg:col-span-1 lg:row-span-2 lg:aspect-auto lg:h-[432px]"
+              src={getRestaurantImage(currentRestaurant)}
+              onError={onImageError(RESTAURANT_IMAGES[0])}
+              alt={currentRestaurant?.name || "Restaurante"}
+            />
             <img
-            className="w-full h-[40vh] object-cover"
-            src={resolveProductUpload(currentRestaurant?.images?.[1]) || RESTAURANT_IMAGES[1]}
-            onError={onImageError(RESTAURANT_IMAGES[1])}
-            alt={`${currentRestaurant?.name || "Restaurante"} 2`}
-          />
-            </Grid>
-            <Grid item xs={12} lg={6}>
+              className="w-full aspect-[4/3] object-cover lg:aspect-auto lg:h-[208px]"
+              src={secondPhoto || RESTAURANT_IMAGES[1]}
+              onError={onImageError(RESTAURANT_IMAGES[1])}
+              alt={secondPhoto ? "Segunda foto del restaurante" : "Pizza de referencia"}
+            />
             <img
-            className="w-full h-[40vh] object-cover"
-            src={resolveProductUpload(currentRestaurant?.images?.[2]) || RESTAURANT_IMAGES[2]}
-            onError={onImageError(RESTAURANT_IMAGES[2])}
-            alt={`${currentRestaurant?.name || "Restaurante"} 3`}
-          />
-            </Grid>
-          </Grid>
+              className="w-full aspect-[4/3] object-cover lg:aspect-auto lg:h-[208px]"
+              src={thirdPhoto || RESTAURANT_IMAGES[2]}
+              onError={onImageError(RESTAURANT_IMAGES[2])}
+              alt={thirdPhoto ? "Tercera foto del restaurante" : "Sándwich de referencia"}
+            />
+          </div>
         </div>
         <div className="pt-3 pb-5">
           <h1 className="text-4xl font-semibold">

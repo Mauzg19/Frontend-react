@@ -9,6 +9,7 @@ Artefactos: JAR y build React exactos del 22-nov, hashes en ../validation/2026-1
 | Fuente → JAR/build | mvn package y build React CI, hashes releídos en servidor |
 | API → DB demo | cinco productos, un restaurante, cuatro cuentas y órdenes sintéticas persistentes |
 | Uploads → HTTPS | cinco fotos originales decodificadas con dimensiones y SHA |
+| Recurso de respaldo → navegador | En la web r6 verificar galería a 1440 y 390 px, 13 fotos locales, búsqueda, ausencia de peticiones a las ilustraciones retiradas y sustitución de una foto de Hamburguesa que devuelve 404. |
 | JWT/rol → demanda | propietario/admin 200, cliente/gerente 403 |
 | Pesos Keras → respuesta pública | cinco escenarios y modelId v2 |
 | OCI NSG → HTTPS público | certificado válido, 80/443 dedicados, DB sin puerto público |

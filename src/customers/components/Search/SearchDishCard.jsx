@@ -6,7 +6,7 @@ import EastIcon from "@mui/icons-material/East";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../../State/Customers/Cart/cart.action";
 import { useNavigate } from "react-router-dom";
-import { FOOD_IMAGES, getFoodImage, onImageError } from "../../../config/imageFallbacks";
+import { getFoodFallback, getFoodImage, onImageError } from "../../../config/imageFallbacks";
 
 const SearchDishCard = ({item}) => {
     const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const SearchDishCard = ({item}) => {
             <img
               className="w-[5rem] h-[5rem]"
               src={getFoodImage(item)}
-              onError={onImageError(FOOD_IMAGES[0])}
+              onError={onImageError(getFoodFallback(item))}
               alt={item.name}
             />
             <Button onClick={handleAddItemToCart} size="small">Add</Button>

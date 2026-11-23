@@ -1,33 +1,32 @@
 import { API_URL } from "./api";
 
 export const RESTAURANT_IMAGES = [
-  "/assets/generated/restaurant-italian.png",
-  "/assets/generated/restaurant-burger.png",
-  "/assets/generated/restaurant-pizza.png",
+  "/assets/photos/burger.jpg",
+  "/assets/photos/pizza.jpg",
+  "/assets/photos/sandwich.jpg",
 ];
 
-export const FOOD_IMAGES = [
-  "/assets/generated/food-pasta.png",
-  "/assets/generated/food-pizza.png",
-  "/assets/generated/food-burger.png",
-];
-
-export const USER_IMAGE = "/Logo-eslogan.png";
-
-const pickById = (items, id) => {
-  const safeId = Number.isFinite(Number(id)) ? Number(id) : 0;
-  return items[Math.abs(safeId) % items.length];
+const foodPhotos = {
+  hamburguesa: "burger",
+  burger: "burger",
+  pizza: "pizza",
+  sandwich: "sandwich",
+  arroz: "rice",
 };
 
-const firstImage = (images) => {
-  if (!Array.isArray(images)) return null;
-  return images.find((image) => typeof image === "string" && image.trim());
+export const getFoodFallback = (food) => {
+  const name = food?.name?.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+  if (Object.prototype.hasOwnProperty.call(foodPhotos, name)) {
+    return `/assets/photos/${foodPhotos[name]}.jpg`;
+  }
+  return "/Logo-eslogan.png";
 };
 
 export const resolveProductUpload = (image) => {
-  if (!image) return null;
+  if (typeof image !== "string" || !image.trim()) return null;
   try {
     const url = new URL(image, API_URL + "/");
+    if (url.pathname.startsWith("/assets/generated/")) return null;
     if (url.pathname.startsWith("/uploads/product-images/")) {
       return new URL(url.pathname + url.search, API_URL + "/").href;
     }
@@ -37,13 +36,15 @@ export const resolveProductUpload = (image) => {
   }
 };
 
-export const getRestaurantImage = (restaurant, index = 0) =>
-  resolveProductUpload(firstImage(restaurant?.images) || restaurant?.imageUrl) ||
-  pickById(RESTAURANT_IMAGES, restaurant?.id ?? index);
+const firstImage = (item) => {
+  const images = Array.isArray(item?.images) ? item.images : [];
+  return images.map(resolveProductUpload).find(Boolean) || resolveProductUpload(item?.imageUrl);
+};
 
-export const getFoodImage = (food, index = 0) =>
-  resolveProductUpload(firstImage(food?.images) || food?.imageUrl) ||
-  pickById(FOOD_IMAGES, food?.id ?? index);
+export const getRestaurantImage = (restaurant) =>
+  firstImage(restaurant) || RESTAURANT_IMAGES[0];
+
+export const getFoodImage = (food) => firstImage(food) || getFoodFallback(food);
 
 export const onImageError = (fallback) => (event) => {
   const img = event.currentTarget;

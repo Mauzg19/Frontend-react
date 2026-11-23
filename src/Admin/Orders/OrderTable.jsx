@@ -24,7 +24,7 @@ import formatCurrency from "../../config/formatCurrency";
 
 import { useDispatch, useSelector } from "react-redux";
 import { updateOrderStatus } from "../../State/Admin/Order/restaurants.order.action";
-import { FOOD_IMAGES, getFoodImage, onImageError } from "../../config/imageFallbacks";
+import { getFoodFallback, getFoodImage, onImageError } from "../../config/imageFallbacks";
 // import {
 //   confirmOrder,
 //   deleteOrder,
@@ -130,7 +130,7 @@ const OrdersTable = ({ isDashboard, name }) => {
                             key={g.food?.id ?? g.food?.name}
                             alt={g.food?.name}
                             src={getFoodImage(g.food)}
-                            imgProps={{ onError: onImageError(FOOD_IMAGES[0]) }}
+                            imgProps={{ onError: onImageError(getFoodFallback(g.food)) }}
                           />
                         ))}
                       </AvatarGroup>{" "}

@@ -9,7 +9,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { isPresentInFavorites } from "../../../config/logic";
 import { getRestaurantImage, onImageError, RESTAURANT_IMAGES } from "../../../config/imageFallbacks";
 
-const RestaurantCard = ({ data, index }) => {
+const RestaurantCard = ({ data }) => {
   const navigate = useNavigate();
   const { auth } = useSelector((store) => store);
   const jwt=localStorage.getItem("jwt");
@@ -34,7 +34,7 @@ const RestaurantCard = ({ data, index }) => {
       <div onClick={navigateToRestaurant} className={`${data.open?"cursor-pointer":"cursor-not-allowed"}  relative`}>
         <img
           className="w-full h-[10rem] rounded-t-md object-cover "
-          src={getRestaurantImage(data, index)}
+          src={getRestaurantImage(data)}
           onError={onImageError(RESTAURANT_IMAGES[0])}
           alt={data.name}
         />

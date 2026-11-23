@@ -17,6 +17,7 @@ import {
   import React from "react";
 
   import { useSelector } from "react-redux";
+  import { getRestaurantImage, onImageError, RESTAURANT_IMAGES } from "../../config/imageFallbacks";
 
   const RestaurantTable = ({ isDashboard, name }) => {
     const restaurant = useSelector((store) => store.restaurant);
@@ -53,7 +54,11 @@ import {
                   >
                     <TableCell>
                       {" "}
-                      <Avatar alt={item.name} src={item.imageUrl} />{" "}
+                      <Avatar
+                        alt={item.name}
+                        src={getRestaurantImage(item)}
+                        imgProps={{ onError: onImageError(RESTAURANT_IMAGES[0]) }}
+                      />{" "}
                     </TableCell>
 
                     <TableCell
