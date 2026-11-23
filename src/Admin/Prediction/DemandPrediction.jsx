@@ -33,7 +33,8 @@ export default function DemandPrediction() {
     setError('');
     api.get('/api/admin/demand/report', { headers: headers() }).then(({data}) => {
       if (!active) return;
-      setReport(data); setForm(data.examples[0].request);
+      const example = data.examples.find(({ request }) => request.product === 'Hamburguesa') ?? data.examples[0];
+      setReport(data); setForm(example.request);
     }).catch(() => { if (active) setError('No se pudo cargar el modelo. Comprueba la conexión e intenta de nuevo.'); });
     return () => { active = false; };
   }, [attempt]);

@@ -81,22 +81,29 @@ export const getRestaurantById = (reqData) => {
   };
 };
 
+let ownerRestaurantRequestId = 0;
+
 export const getRestaurantByUserId = (jwt) => {
   return async (dispatch) => {
-    dispatch({ type: GET_RESTAURANT_BY_USER_ID_REQUEST });
+    if (!jwt) return;
+    const meta = { jwt, requestId: ++ownerRestaurantRequestId };
+    dispatch({ type: GET_RESTAURANT_BY_USER_ID_REQUEST, meta });
     try {
       const { data } = await api.get(`/api/admin/restaurants/user`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       });
-      console.log("get restaurant by user id ", data);
-      dispatch({ type: GET_RESTAURANT_BY_USER_ID_SUCCESS, payload: data });
+      // Spring returns 200 with an empty body when the owner has no restaurant.
+      const restaurant = data === "" || data === null ? null : data;
+      if (restaurant !== null && !Number.isInteger(restaurant?.id)) {
+        throw new Error("El servidor devolvió un restaurante inválido.");
+      }
+      dispatch({ type: GET_RESTAURANT_BY_USER_ID_SUCCESS, payload: restaurant, meta });
     } catch (error) {
-      console.log("catch error ", error);
       dispatch({
         type: GET_RESTAURANT_BY_USER_ID_FAILURE,
-        payload: error.message,
+        meta,
       });
     }
   };
