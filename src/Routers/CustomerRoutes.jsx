@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import HomePage from '../customers/pages/Home/HomePage'
 import Navbar from '../customers/components/Navbar/Navbar'
 import Cart from '../customers/pages/Cart/Cart'
@@ -12,6 +12,12 @@ import NotFound from '../customers/pages/NotFound/NotFound'
 
 
 
+const RestaurantRedirect = () => {
+  const { id } = useParams();
+  const { search, hash } = useLocation();
+  return <Navigate replace to={{ pathname: `/restaurant/${id}`, search, hash }} />;
+};
+
 const CustomerRoutes = () => {
   return (
     <div className='relative'>
@@ -21,7 +27,8 @@ const CustomerRoutes = () => {
         <Routes>
             <Route exact path='/' element={<HomePage/>}/>
             <Route exact path='/account/:register' element={<HomePage/>}/>
-            <Route exact path='/restaurant/:city/:title/:id' element={<Restaurant/>}/>
+            <Route path='/restaurant/:id' element={<Restaurant/>}/>
+            <Route path='/restaurant/:city/:title/:id' element={<RestaurantRedirect/>}/>
             <Route path='/cart' element={<Cart/>}/>
             <Route path='/payment/success/:id' element={<PaymentSuccess/>}/>
             <Route path='/payment/return' element={<PaymentSuccess/>}/>

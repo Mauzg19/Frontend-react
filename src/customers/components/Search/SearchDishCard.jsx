@@ -25,7 +25,7 @@ const SearchDishCard = ({item}) => {
     <Card className=" m-3">
       <CardHeader className="text-sm"
         action={
-          <IconButton onClick={()=>navigate(`/restaurant/${item.restaurant.address.city}/${item.restaurant.name}/${item.restaurant.id}`)} aria-label="settings">
+          <IconButton onClick={()=>navigate(`/restaurant/${item.restaurant.id}`)} aria-label="Ver restaurante">
             <EastIcon />
           </IconButton>
         }

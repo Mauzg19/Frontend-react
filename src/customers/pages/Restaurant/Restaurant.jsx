@@ -44,6 +44,10 @@ const Restaurant = () => {
   const thirdPhoto = resolveProductUpload(currentRestaurant?.images?.[2]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
+  useEffect(() => {
     dispatch(
       getRestaurantById({
         jwt: localStorage.getItem("jwt"),
@@ -77,12 +81,12 @@ const Restaurant = () => {
   };
 
   return (
-    <><div className="px-5 lg:px-20 ">
+    <><div className="px-5 pt-6 lg:px-20 lg:pt-10">
       <section>
-        <h3 className="text-gray-500 py-2 mt-10">
-          Home/{currentRestaurant?.address?.country || "Colombia"}/
-          {currentRestaurant?.name}/{currentRestaurant?.id}/Order Online
-        </h3>
+        <div className="pb-5">
+          <h1 className="text-4xl font-semibold">{currentRestaurant?.name}</h1>
+          <p className="text-gray-400 mt-1">{currentRestaurant?.description}</p>
+        </div>
         <div>
 
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-[7fr_5fr] lg:grid-rows-2">
@@ -107,17 +111,13 @@ const Restaurant = () => {
           </div>
         </div>
         <div className="pt-3 pb-5">
-          <h1 className="text-4xl font-semibold">
-            {currentRestaurant?.name}
-          </h1>
-          <p className="text-gray-500 mt-1">{currentRestaurant?.description}</p>
           <div className="space-y-3 mt-3">
               <p className="text-gray-500 flex items-center gap-3">
             <LocationOnIcon/> <span>{currentRestaurant?.address?.streetAddress || currentRestaurant?.address?.city || "Dirección no registrada"}
               </span>
           </p>
           <p className="flex items-center gap-3 text-gray-500">
-           <TodayIcon/> <span className=" text-orange-300"> {currentRestaurant?.openingHours || "Horario no registrado"} (Today)</span>
+           <TodayIcon/> <span className="text-orange-300">{currentRestaurant?.openingHours || "Horario no registrado"}</span>
           </p>
           </div>
 
