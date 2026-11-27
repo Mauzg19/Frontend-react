@@ -41,3 +41,21 @@ test('posts entered history and renders v2 units, then clears stale results', as
   fireEvent.change(screen.getByLabelText(/Unidades del día anterior/), { target: { value: '42' } });
   expect(screen.queryByText(/49,58 unidades estimadas/)).not.toBeInTheDocument();
 });
+
+test('loads the selected calendar week, excludes the target day and clears incomplete history', async () => {
+  const series = [3, 0, 2, 4, 6, 8, 10, 12, 14].map((units, i) => ({
+    date: '2026-08-' + (23+i), product:'Hamburguesa', units
+  }));
+  api.get.mockResolvedValue({data:{...report, series}});
+  render(<DemandPrediction />);
+  const date = await screen.findByLabelText(/Fecha del escenario/);
+  fireEvent.change(date, {target:{value:'2026-08-31'}});
+  expect(screen.getByLabelText(/día anterior/)).toHaveValue(12);
+  expect(screen.getByLabelText(/hace siete días/)).toHaveValue(0);
+  expect(screen.getByLabelText(/Promedio de los siete/)).toHaveValue(6);
+  fireEvent.change(date, {target:{value:'2026-09-03'}});
+  expect(screen.getByLabelText(/día anterior/)).toHaveValue(null);
+  expect(screen.getByText(/Faltan datos/)).toBeVisible();
+  fireEvent.click(screen.getByRole('button', {name:'Estimar demanda'}));
+  expect(api.post).not.toHaveBeenCalled();
+});

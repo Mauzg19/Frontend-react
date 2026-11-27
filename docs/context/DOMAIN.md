@@ -5,3 +5,5 @@ Cliente: catálogo/carrito/pedidos. Propietario: opera su restaurante. Administr
 JWT y autorización por objeto en Spring. Nunca sembrar una base existente ajena a demostración; semilla transaccional opt-in y no duplicada. Pagos iniciales marcados DEMO_SYNTHETIC no son cobros Stripe. Modelo entrenado con datos sintéticos, MAE 3.0503864 en su partición congelada, no promesa de precisión real.
 ## Lifecycles
 Primera semilla con perfil demo/flag explícito → verificar relaciones → retirar flag/clave de semilla → operación normal y persistencia en volúmenes. Publicación por HTTPS conserva API y web en el mismo origen.
+
+Al elegir un producto y una fecha, el formulario usa las siete fechas anteriores de la serie sintética del informe. Conserva la fecha al cambiar el producto. Una semana incompleta deja los tres campos vacíos para que se elija otra fecha o se ingrese un escenario manual. El primer escenario con historial completo es el 8 de septiembre de 2025 y el último es el 1 de septiembre de 2026.

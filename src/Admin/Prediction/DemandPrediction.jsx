@@ -20,12 +20,29 @@ function Lines({ rows, keys, title, label }) {
   </Box>;
 }
 
+function historicalForm(report, product, date) {
+  const history = new Map((report.series || []).filter(r => r.product === product).map(r => [r.date, r.units]));
+  const day = Date.parse(date + 'T00:00:00Z');
+  if (Number.isFinite(day)) {
+    const week = Array.from({length:7}, (_, i) => history.get(new Date(day - (i+1)*86400000).toISOString().slice(0,10)));
+    if (week.every(Number.isFinite)) {
+      return {product, date, lag1:week[0], lag7:week[6], mean7:week.reduce((sum,n) => sum+n,0)/7};
+    }
+  }
+  if (!report.series) {
+    const saved = report.examples.find(e => e.request.product === product && e.request.date === date);
+    if (saved) return {...saved.request};
+  }
+  return {product, date, lag1:'', lag7:'', mean7:''};
+}
+
 export default function DemandPrediction() {
   const [report, setReport] = useState(null);
   const [error, setError] = useState('');
   const [form, setForm] = useState(null);
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [missingWeek, setMissingWeek] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const headers = () => ({ Authorization: `Bearer ${localStorage.getItem('jwt')}` });
   useEffect(() => {
@@ -34,13 +51,19 @@ export default function DemandPrediction() {
     api.get('/api/admin/demand/report', { headers: headers() }).then(({data}) => {
       if (!active) return;
       const example = data.examples.find(({ request }) => request.product === 'Hamburguesa') ?? data.examples[0];
-      setReport(data); setForm(example.request);
+      const initial = historicalForm(data, example.request.product, example.request.date);
+      setReport(data); setForm(initial); setMissingWeek(initial.lag1 === '');
     }).catch(() => { if (active) setError('No se pudo cargar el modelo. Comprueba la conexión e intenta de nuevo.'); });
     return () => { active = false; };
   }, [attempt]);
   const update = (key, value) => { setForm({...form, [key]:value}); setResult(null); setError(''); };
+  function selectScenario(product, date) {
+    const next = historicalForm(report, product, date);
+    setForm(next); setMissingWeek(next.lag1 === ''); setResult(null); setError('');
+  }
   async function predict(event) {
-    event.preventDefault(); if (busy) return;
+    event.preventDefault();
+    if (busy || !form.date || [form.lag1, form.lag7, form.mean7].some(value => value === '')) return;
     setBusy(true); setResult(null); setError('');
     try {
       const {data} = await api.post('/api/admin/demand/predict', {
@@ -63,10 +86,11 @@ export default function DemandPrediction() {
     </Stack>
     <Paper variant="outlined" sx={{p:{xs:2,md:3},mb:3}}>
       <Typography variant="h5" gutterBottom>Probar un escenario</Typography>
-      <Typography sx={{mb:2}}>El ejemplo usa los siete días anteriores del CSV. Cambiar la fecha conserva la historia ingresada; ajústala para representar otro escenario.</Typography>
+      <Typography sx={{mb:2}}>Elige producto y fecha. Los tres campos se llenan con sus ventas de los siete días anteriores en el historial sintético. Puedes editar los valores para ensayar otro escenario.</Typography>
+      {missingWeek && <Alert severity="info" sx={{mb:2}}>Faltan datos para completar los siete días anteriores. Elige otra fecha o ingresa el historial manualmente.</Alert>}
       <Box component="form" onSubmit={predict} sx={{display:'grid', gridTemplateColumns:{xs:'1fr',sm:'1fr 1fr',md:'repeat(3,1fr)'},gap:2}}>
-        <TextField select label="Producto" value={form.product} disabled={busy} onChange={e => {setForm(report.examples.find(x => x.request.product === e.target.value).request);setResult(null);}}>{report.products.map(p => <MenuItem key={p} value={p}>{p}</MenuItem>)}</TextField>
-        <TextField label="Fecha del escenario" type="date" value={form.date} disabled={busy} required InputLabelProps={{shrink:true}} onChange={e => update('date',e.target.value)} />
+        <TextField select label="Producto" value={form.product} disabled={busy} onChange={e => selectScenario(e.target.value, form.date)}>{report.products.map(p => <MenuItem key={p} value={p}>{p}</MenuItem>)}</TextField>
+        <TextField label="Fecha del escenario" type="date" value={form.date} disabled={busy} required InputLabelProps={{shrink:true}} onChange={e => selectScenario(form.product, e.target.value)} />
         {[['lag1','Unidades del día anterior'],['lag7','Unidades de hace siete días'],['mean7','Promedio de los siete días anteriores']].map(([key,label]) => <TextField key={key} type="number" label={label} value={form[key]} disabled={busy} required inputProps={{min:0,max:10000,step:'any'}} onChange={e => update(key,e.target.value)} />)}
         <Button type="submit" variant="contained" disabled={busy} sx={{background:'#c86700',color:'#fff'}}>{busy ? 'Calculando…' : 'Estimar demanda'}</Button>
       </Box>
